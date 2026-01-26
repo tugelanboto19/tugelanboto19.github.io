@@ -1,0 +1,104 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  background: #0b0b0b;
+  color: #fff;
+  line-height: 1.6;
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  letter-spacing: 6px;
+}
+
+.hero p {
+  margin-top: 10px;
+  opacity: 0.7;
+}
+
+/* ABOUT */
+.about {
+  max-width: 800px;
+  margin: 100px auto;
+  padding: 0 20px;
+}
+
+.about h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+/* WORKS */
+.works {
+  padding: 0 20px 100px;
+}
+
+.works h2 {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  font-size: 1.8rem;
+}
+
+.grid {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+/* DESIGN CARD */
+.design-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: #111;
+}
+
+.design-card img {
+  width: 100%;
+  display: block;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* artwork hidden */
+.design-card .artwork {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+/* HOVER EFFECT */
+.design-card:hover .mockup {
+  opacity: 0;
+  transform: scale(1.03);
+}
+
+.design-card:hover .artwork {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 0.9rem;
+  opacity: 0.5;
+}
