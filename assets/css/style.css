@@ -5,10 +5,23 @@
 }
 
 body {
-  font-family: Helvetica, Arial, sans-serif;
-  background: #0b0b0b;
-  color: #fff;
-  line-height: 1.6;
+    /* Warna abu-abu semen */
+    background-color: #dcdcdc;
+    
+    /* Pola titik-titik halus untuk efek tekstur */
+    background-image: radial-gradient(#b0b0b0 1px, transparent 1px);
+    background-size: 10px 10px;
+    
+    color: #111111; /* Teks tetap hitam */
+    font-family: 'Courier New', Courier, monospace; /* Font gaya mesin ketik */
+    margin: 0;
+    padding-bottom: 50px;
+}
+
+/* Opsional: Biar judul makin garang */
+h1, h2 {
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 /* HERO */
@@ -101,4 +114,80 @@ footer {
   padding: 40px 20px;
   font-size: 0.9rem;
   opacity: 0.5;
+}
+.fade-out {
+  opacity: 0;
+  transform: scale(1.02);
+}
+
+.fade-in {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.idle {
+  animation: idleZoom 6s ease-in-out infinite;
+}
+
+@keyframes idleZoom {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+.design img {
+  width: 100%;
+  display: block;
+  transition: 
+    opacity 0.4s ease,
+    transform 0.6s ease,
+    filter 0.6s ease;
+  filter: brightness(0.9) contrast(1.05);
+}
+.design:hover img {
+  filter: brightness(1) contrast(1.2);
+}
+
+
+img {
+    /* Mencegah gambar bisa di-select/blok biru */
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+    /* Mencegah gambar ditarik (drag) */
+    -webkit-user-drag: none;
+    
+    /* Mencegah menu download muncul saat ditekan lama di HP (iPhone/Android) */
+    -webkit-touch-callout: none;
+    pointer-events: none; /* Opsional: Ini membuat gambar tidak bisa diklik sama sekali */
+}
+/* Pengaturan Hero Section */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* Posisi tengah horizontal */
+    justify-content: center; /* Posisi tengah vertikal */
+    min-height: 90vh;        /* Tinggi hampir satu layar penuh */
+    padding: 20px;
+    text-align: center;
+}
+
+/* Pengaturan Ukuran Logo */
+.hero-logo {
+    width: 100%;        /* Lebar mengikuti layar HP */
+    max-width: 700px;   /* Batas maksimal agar tidak terlalu raksasa di Laptop */
+    height: auto;       /* Tinggi menyesuaikan otomatis */
+    margin-bottom: 1rem; /* Jarak antara logo dan tulisan tagline */
+    
+    /* Efek bayangan halus agar logo makin pop-up (opsional) */
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); 
+}
+
+.hero p {
+    font-size: 1.2rem;
+    letter-spacing: 3px; /* Memberi jarak antar huruf agar elegan */
+    margin-top: 10px;
+    text-transform: uppercase;
 }
