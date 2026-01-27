@@ -139,3 +139,83 @@ function createBlood(x, y) {
         blood.remove();
     }, 800);
 }
+// --- WARNING GATE LOGIC ---
+window.addEventListener('load', function() {
+    // Tunggu 3.5 detik agar efek loading selesai terasa
+    setTimeout(() => {
+        openGate();
+    }, 3500);
+});
+
+// Fungsi membuka gerbang
+function openGate() {
+    const gate = document.getElementById('warning-gate');
+    if (gate) {
+        // Tambahkan class agar CSS menggeser div ke atas
+        gate.classList.add('gate-open');
+        
+        // Opsional: Hapus elemen dari HTML setelah animasi selesai (biar ringan)
+        setTimeout(() => {
+            gate.style.display = 'none';
+        }, 1000); 
+    }
+}
+
+// Fitur Tambahan: Klik layar untuk skip loading (jika user tidak sabar)
+document.getElementById('warning-gate').addEventListener('click', function() {
+    openGate();
+});
+// --- FORENSIC ZOOM LOGIC ---
+
+// Ambil elemen modal
+const modal = document.getElementById("forensic-modal");
+const modalImg = document.getElementById("evidence-img");
+const captionText = document.getElementById("caption");
+const span = document.getElementsByClassName("close-modal")[0];
+
+// Fungsi untuk mendeteksi klik pada gambar karya
+// Kita gunakan Event Delegation agar gambar yang digenerate otomatis (023-100) juga bisa diklik
+document.querySelector('.grid').addEventListener('click', function(e) {
+    // Cek apakah yang diklik adalah gambar (img)
+    if (e.target.tagName === 'IMG') {
+        modal.style.display = "block";
+        
+        // Ambil sumber gambar yang diklik
+        // Trik: Jika yang diklik Mockup, kita bisa cari Artwork aslinya (opsional)
+        // Untuk sekarang, kita tampilkan saja apa yang diklik
+        modalImg.src = e.target.src;
+        
+        // Ambil nama file sebagai caption (biar terlihat teknis)
+        // Contoh: assets/images/023 Medium.jpeg -> EVIDENCE FILE: 023 Medium.jpeg
+        const filename = e.target.src.split('/').pop();
+        captionText.innerHTML = "EVIDENCE FILE: <span style='color:red'>" + filename + "</span>";
+    }
+});
+
+// Fungsi tombol Close (X)
+span.onclick = function() { 
+  modal.style.display = "none";
+}
+
+// Fitur tambahan: Klik di area gelap mana saja untuk menutup (biar gampang)
+modal.onclick = function(e) {
+    if (e.target === modal) {
+        modal.style.display = "none";
+    }
+}
+
+// --- PROTEKSI (ANTI MALING) ---
+
+// 1. Mencegah Klik Kanan pada Gambar (Agar tidak bisa Save As)
+document.addEventListener('contextmenu', function(e) {
+    if (e.target.tagName === 'IMG') {
+        e.preventDefault(); // Matikan menu klik kanan
+    }
+});
+
+// 2. Mencegah Drag and Drop (Agar gambar tidak bisa ditarik ke desktop)
+document.addEventListener('dragstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+        e.preventDefault();
+    }
+});

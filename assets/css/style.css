@@ -227,7 +227,24 @@ img {
     
     /* Mencegah menu download muncul saat ditekan lama di HP (iPhone/Android) */
     -webkit-touch-callout: none;
-    pointer-events: none; /* Opsional: Ini membuat gambar tidak bisa diklik sama sekali */
+    img {
+    /* Mencegah gambar bisa di-select/blok biru */
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+    /* Mencegah gambar ditarik (drag) ke desktop */
+    -webkit-user-drag: none;
+    
+    /* Mencegah menu download muncul saat ditekan lama di HP */
+    -webkit-touch-callout: none;
+    
+    /* HAPUS BARIS INI: pointer-events: none; */
+    /* Agar gambar bisa diklik kiri untuk Zoom */
+    cursor: crosshair; /* Ganti kursor jadi bidikan saat diarahkan ke gambar */
+}
 }
 /* Pengaturan Hero Section */
 .hero {
@@ -545,20 +562,215 @@ body::after {
     z-index: 99999; /* Paling depan */
 }
 
-/* --- EFEK TV STATIC / NOISE (VERSI KUAT) --- */
-.tv-noise {
-    position: fixed; /* Agar nempel di layar terus saat scroll */
+/* --- THE WARNING GATE (LOADING SCREEN) --- */
+#warning-gate {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: none; /* Agar klik tembus ke belakang */
-    z-index: 99999; /* Paling depan menutupi semua */
-    
-    /* Gambar Noise */
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
-    
-    /* PENTING: Saya naikkan ke 0.15 (15%) agar terlihat jelas. 
-       Kalau terlalu kotor, turunkan jadi 0.05 atau 0.08 */
-    opacity: 0.15; 
+    background-color: #000000; /* Hitam total */
+    z-index: 999999; /* Pastikan menutupi segalanya */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #ff0000; /* Merah Danger */
+    font-family: 'Courier New', monospace;
+    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1); /* Efek slide up halus */
+}
+
+/* Jika kelas ini ditambahkan, gerbang akan naik ke atas */
+#warning-gate.gate-open {
+    transform: translateY(-100%);
+}
+
+.gate-content {
+    text-align: center;
+    max-width: 80%;
+}
+
+.gate-logo {
+    width: 150px;
+    margin-bottom: 30px;
+    filter: grayscale(100%) contrast(150%);
+    animation: pulse-red 2s infinite; /* Logo berdenyut */
+}
+
+.gate-warning {
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.7); /* Efek neon rusak */
+    animation: glitch-text 0.3s infinite; /* Teks bergetar */
+}
+
+.gate-text {
+    color: #666;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+}
+
+/* Loading Bar Keren */
+.loading-bar {
+    width: 300px;
+    height: 4px;
+    background: #333;
+    margin: 0 auto 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-progress {
+    width: 100%;
+    height: 100%;
+    background: #ff0000;
+    position: absolute;
+    left: -100%; /* Mulai dari kiri luar */
+    animation: load-scan 3s linear forwards; /* Animasi loading 3 detik */
+}
+
+.gate-status {
+    font-size: 0.8rem;
+    color: #fff;
+    animation: blink 0.5s infinite;
+}
+
+/* --- ANIMASI KEYFRAMES --- */
+@keyframes pulse-red {
+    0% { transform: scale(1); filter: drop-shadow(0 0 0 red); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 15px darkred); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 0 red); }
+}
+
+@keyframes load-scan {
+    0% { left: -100%; }
+    100% { left: 0%; }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Responsif HP */
+@media (max-width: 600px) {
+    .loading-bar { width: 200px; }
+    .gate-warning { font-size: 1rem; letter-spacing: 2px; }
+}
+/* --- FORENSIC ZOOM (LIGHTBOX) --- */
+.modal {
+    display: none; /* Sembunyi dulu */
+    position: fixed;
+    z-index: 99999; /* Di atas segalanya (kecuali loading screen) */
+    padding-top: 50px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.95); /* Hitam pekat 95% */
+    backdrop-filter: blur(5px); /* Efek blur background */
+}
+
+/* Gambar yang diperbesar */
+.modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 800px;
+    border: 2px solid #333;
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+}
+
+/* Wrapper agar garis scan bisa menimpa gambar */
+.modal-wrapper {
+    position: relative;
+    width: fit-content;
+    margin: auto;
+}
+
+/* Efek Garis Scanner Hijau/Merah */
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: rgba(0, 255, 0, 0.5); /* Warna Hijau Hacker */
+    box-shadow: 0 0 10px #00ff00;
+    animation: scan-move 2s linear infinite;
+    pointer-events: none;
+}
+
+.modal-overlay-text {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    background: rgba(0,0,0,0.7);
+    padding: 2px 5px;
+}
+
+/* Tombol Close (X) */
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: #ff0000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Caption di bawah gambar */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
+/* Animasi Zoom saat muncul */
+.modal-content, #caption {  
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@keyframes zoom {
+    from {transform:scale(0)} 
+    to {transform:scale(1)}
+}
+
+@keyframes scan-move {
+    0% { top: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+/* Responsif HP */
+@media only screen and (max-width: 700px){
+    .modal-content {
+        width: 100%;
+    }
 }
