@@ -72,8 +72,19 @@ h1, h2 {
     border-bottom: 2px solid #000; /* Garis bawah judul */
     display: inline-block;
     padding-bottom: 10px;
+    position: relative;
+    animation: glitch-skew 3s infinite linear alternate-reverse;
 }
-
+@keyframes glitch-skew {
+    0% { transform: skew(0deg); }
+    10% { transform: skew(-2deg); }
+    20% { transform: skew(2deg); }
+    30% { transform: skew(0deg); }
+    90% { transform: skew(0deg); } /* Diam lama */
+    92% { transform: skew(5deg); } /* Sentakan tiba-tiba */
+    94% { transform: skew(-5deg); }
+    100% { transform: skew(0deg); }
+}
 .about p {
     font-family: 'Courier New', Courier, monospace;
     font-size: 1rem;
@@ -516,4 +527,38 @@ img {
     opacity: 1;       /* Munculkan teks */
     margin-left: 10px; /* Beri jarak dari icon */
     color: #fff;      /* Teks jadi putih */
+}
+/* --- EFEK NOISE / TV STATIC (YANG KETINGGALAN) --- */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Membuat pola bintik-bintik */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
+    
+    /* Mengatur ketebalan noise */
+    opacity: 0.05; 
+    pointer-events: none; /* Agar tetap bisa diklik tembus ke belakang */
+    z-index: 99999; /* Paling depan */
+}
+
+/* --- EFEK TV STATIC / NOISE (VERSI KUAT) --- */
+.tv-noise {
+    position: fixed; /* Agar nempel di layar terus saat scroll */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Agar klik tembus ke belakang */
+    z-index: 99999; /* Paling depan menutupi semua */
+    
+    /* Gambar Noise */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+    
+    /* PENTING: Saya naikkan ke 0.15 (15%) agar terlihat jelas. 
+       Kalau terlalu kotor, turunkan jadi 0.05 atau 0.08 */
+    opacity: 0.15; 
 }
