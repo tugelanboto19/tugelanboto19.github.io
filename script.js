@@ -100,3 +100,42 @@ document.addEventListener('dragstart', function(e) {
         e.preventDefault();
     }
 });
+// --- FITUR KURSOR BERDARAH (MODE PEMBANTAIAN) ---
+
+document.addEventListener('mousemove', function(e) {
+    // Kita panggil fungsi createBlood beberapa kali untuk efek 'muncrat'
+    // Angka 3 berarti sekali geser keluar 3 tetes. Bisa ganti jadi 5 kalau mau lebih parah.
+    for (let i = 0; i < 3; i++) {
+        createBlood(e.pageX, e.pageY);
+    }
+});
+
+function createBlood(x, y) {
+    const blood = document.createElement('div');
+    blood.classList.add('blood-drop');
+    
+    // Memberi sedikit "sebaran" (random offset) biar tidak menumpuk di satu titik
+    // Darah akan muncul acak di sekitar kursor (jarak -10px sampai +10px)
+    const spread = 15; 
+    const randomX = (Math.random() * spread) - (spread / 2);
+    const randomY = (Math.random() * spread) - (spread / 2);
+
+    blood.style.left = (x + randomX) + 'px';
+    blood.style.top = (y + randomY) + 'px';
+    
+    // Variasi ukuran: ada yang kecil (2px) ada yang besar (12px)
+    const size = Math.random() * 10 + 2; 
+    blood.style.width = size + 'px';
+    blood.style.height = size + 'px';
+    
+    // Warna: Variasi merah (biar ada yang merah segar & merah hati)
+    // Logika: Kadang merah terang, kadang merah gelap
+    blood.style.backgroundColor = Math.random() < 0.5 ? '#8a0303' : '#ff0000';
+
+    document.body.appendChild(blood);
+
+    // Hapus elemen lebih cepat (0.8 detik) biar tidak bikin komputer lag karena kebanyakan elemen
+    setTimeout(() => {
+        blood.remove();
+    }, 800);
+}
