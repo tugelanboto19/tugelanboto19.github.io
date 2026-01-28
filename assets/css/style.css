@@ -962,3 +962,285 @@ body::after {
     background-color: #8a0303; /* Berubah jadi MERAH DARAH saat disentuh */
     cursor: pointer;
 }
+/* --- DIGITAL DOSSIER (LIVE CV) STYLES --- */
+
+.cv-dossier {
+    max-width: 900px;
+    margin: 40px auto;
+    background-color: #0a0a0a; /* Hitam hampir pekat */
+    border: 2px solid #333;
+    padding: 2px; /* Untuk efek border ganda */
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+    font-family: 'Courier New', monospace;
+    color: #ccc;
+    position: relative;
+}
+
+/* Garis Scanline halus di atas CV */
+.cv-dossier::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+}
+
+.dossier-header {
+    background: #111;
+    padding: 20px;
+    border-bottom: 2px solid #00ff00; /* Hijau neon */
+    text-align: left;
+}
+
+.dossier-header h2 {
+    color: #fff;
+    font-size: 1.8rem;
+    margin: 5px 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.role-tag {
+    color: #00ff00;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* Grid Layout: Sidebar & Main */
+.dossier-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Sidebar 1 bagian, Main 2 bagian */
+    gap: 0;
+}
+
+.dossier-sidebar {
+    background: #0f0f0f;
+    padding: 20px;
+    border-right: 1px dashed #333;
+}
+
+.dossier-main {
+    padding: 20px;
+}
+
+.dossier-section {
+    margin-bottom: 30px;
+}
+
+.dossier-section h3 {
+    color: #00ff00;
+    font-size: 1rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+/* List Kontak */
+.dossier-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.dossier-sidebar ul li {
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Timeline Pendidikan */
+.timeline-item {
+    margin-bottom: 15px;
+    border-left: 2px solid #333;
+    padding-left: 10px;
+}
+
+.timeline-item .year {
+    font-size: 0.7rem;
+    color: #666;
+    display: block;
+}
+
+.timeline-item strong {
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+/* Skill Bar ala RPG/Game */
+.skill-bar {
+    margin-bottom: 10px;
+}
+.skill-bar span {
+    font-size: 0.8rem;
+    display: block;
+    margin-bottom: 3px;
+}
+.skill-bar .bar {
+    height: 6px;
+    background: #222;
+    width: 100%;
+}
+.skill-bar .fill {
+    height: 100%;
+    background: #00ff00;
+    box-shadow: 0 0 5px #00ff00; /* Glow */
+}
+
+/* Job Cards */
+.job-card {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 3px solid #8a0303; /* Aksen Merah Darah untuk Pengalaman */
+    transition: 0.3s;
+}
+
+.job-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: #00ff00; /* Berubah hijau saat hover */
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.job-header h4 {
+    color: #fff;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.job-year {
+    font-size: 0.75rem;
+    background: #222;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.company {
+    display: block;
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.bio-desc {
+    line-height: 1.6;
+    font-size: 0.95rem;
+    color: #ddd;
+}
+
+.dossier-footer {
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #333;
+    font-size: 0.8rem;
+    color: #444;
+}
+
+.blink {
+    animation: blinker 1s linear infinite;
+    color: #00ff00;
+    font-size: 0.8rem;
+}
+
+@keyframes blinker {
+    50% { opacity: 0; }
+}
+
+/* Responsif HP */
+@media (max-width: 768px) {
+    .dossier-grid {
+        grid-template-columns: 1fr; /* Tumpuk ke bawah di HP */
+    }
+    .dossier-sidebar {
+        border-right: none;
+        border-bottom: 1px dashed #333;
+    }
+    .job-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* --- UPDATE PROFILE STYLE --- */
+
+.profile-container {
+    display: flex;
+    flex-direction: column; /* Susun ke bawah: Kartu Atas, CV Bawah */
+    align-items: center;
+    padding: 100px 20px;
+}
+
+/* KOREKSI: Kartu Profil jangan terlalu lebar */
+.profile-card {
+    display: flex;
+    flex-direction: row;
+    background-color: #0f0f0f;
+    border: 4px solid #fff;
+    max-width: 900px;
+    width: 100%;
+    margin-bottom: 50px; /* Jarak dengan CV */
+    position: relative;
+    z-index: 10;
+}
+
+/* EFEK HOLOGRAM PADA FOTO */
+.profile-img {
+    position: relative;
+    overflow: hidden;
+}
+
+.holo-scan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+        rgba(0, 255, 0, 0) 50%, 
+        rgba(0, 255, 0, 0.2) 50%, 
+        rgba(0, 255, 0, 0.2) 51%, 
+        rgba(0, 255, 0, 0) 51%);
+    background-size: 100% 4px;
+    animation: holoScan 4s linear infinite;
+    pointer-events: none;
+    z-index: 5;
+}
+
+@keyframes holoScan {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100%; }
+}
+
+/* CSS KHUSUS CV (Agar responsif) */
+.cv-dossier {
+    width: 100%;
+    max-width: 900px; /* Samakan lebarnya dengan kartu atas */
+    background-color: #050505;
+    border: 1px solid #333;
+    /* Efek Glow Hijau Samar */
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.05); 
+}
+
+/* Responsif HP */
+@media (max-width: 768px) {
+    .profile-card {
+        flex-direction: column;
+    }
+    .cv-dossier {
+        margin-top: 20px;
+    }
+}
