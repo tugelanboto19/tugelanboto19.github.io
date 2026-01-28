@@ -774,38 +774,43 @@ body::after {
         width: 100%;
     }
 }
-/* --- DARK SIGNAL TERMINAL (GUESTBOOK) --- */
-.guestbook {
-    padding: 80px 20px;
-    background-color: #dcdcdc; /* Menyesuaikan background body */
-    text-align: center;
-}
+/* --- GUESTBOOK / TERMINAL FORM HACKER STYLE --- */
 
+/* Container Utama Terminal (Kotak Hitam Penuh) */
 .guestbook-container {
     max-width: 600px;
     margin: 0 auto;
-    background-color: #111; /* Kotak Hitam */
+    /* Latar belakang hitam pekat */
+    background-color: #000000; 
     padding: 30px;
-    border: 2px solid #000;
-    box-shadow: 10px 10px 0px rgba(0,0,0,0.5); /* Bayangan kasar */
-}
-
-.guestbook h2 {
-    color: #fff;
+    /* Border hijau neon khas terminal */
+    border: 2px solid #00ff00;
+    /* Hilangkan bayangan untuk tampilan terminal yang datar */
+    box-shadow: none; 
     font-family: 'Courier New', monospace;
-    margin-bottom: 5px;
-    border-bottom: 1px dashed #444;
-    padding-bottom: 15px;
 }
 
+/* Judul Utama Terminal */
+.guestbook h2 {
+    /* Warna hijau neon */
+    color: #00ff00; 
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    /* Garis bawah hijau putus-putus */
+    border-bottom: 1px dashed #00ff00;
+    padding-bottom: 15px;
+    text-transform: uppercase;
+}
+
+/* Subtitle Terminal */
 .guestbook-subtitle {
-    color: #666;
+    /* Warna hijau neon lebih gelap atau pudar */
+    color: #00cc00; 
     font-size: 0.8rem;
     margin-bottom: 30px;
-    font-family: 'Courier New', monospace;
 }
 
-/* Tampilan Form ala Terminal */
+/* Tampilan Form Terminal */
 .terminal-form {
     display: flex;
     flex-direction: column;
@@ -813,49 +818,60 @@ body::after {
     text-align: left;
 }
 
+/* Gaya Input & Textarea (Di dalam Kotak Hitam) */
 .input-group {
-    background: #000;
-    border: 1px solid #333;
+    /* Latar belakang hitam untuk area input */
+    background: #000; 
+    /* Border hijau neon */
+    border: 1px solid #00ff00; 
     padding: 10px;
     display: flex;
-    align-items: flex-start; /* Agar teks area rapi */
+    align-items: flex-start;
 }
 
+/* Prompt Terminal (e.g., > USER:) */
 .prefix {
-    color: #00ff00; /* Warna Hijau Hacker */
+    /* Warna hijau neon menyala */
+    color: #00ff00; 
     font-weight: bold;
     margin-right: 10px;
-    font-family: 'Courier New', monospace;
     white-space: nowrap;
 }
 
-/* Input & Textarea Transparan */
+/* Teks Input & Textarea */
 .terminal-form input, 
 .terminal-form textarea {
     background: transparent;
     border: none;
-    color: #fff;
+    /* Teks yang diketik juga berwarna hijau neon */
+    color: #00ff00; 
     width: 100%;
     font-family: 'Courier New', monospace;
     font-size: 1rem;
     outline: none;
 }
 
+/* Textarea (Tinggi & Resize) */
 .terminal-form textarea {
-    height: 80px; /* Tinggi kotak pesan */
-    resize: none; /* Gabisa ditarik-tarik */
+    height: 80px;
+    resize: none;
 }
 
-/* Placeholder warna abu gelap */
+/* Placeholder (Teks Bayangan - Ubah agar lebih samar atau hilangkan) */
 ::placeholder {
-    color: #444;
+    /* Warna hijau sangat pudar untuk placeholder, atau kosongkan */
+    color: #005500; 
+    opacity: 0.7;
 }
 
-/* Tombol Kirim */
+/* Tombol Kirim (Gaya Terminal) */
 .transmit-btn {
-    background: #fff;
-    color: #000;
-    border: 2px solid #000;
+    /* Latar belakang hitam */
+    background: #000;
+    /* Teks hijau neon */
+    color: #00ff00;
+    /* Border hijau neon */
+    border: 2px solid #00ff00;
     padding: 15px;
     font-family: 'Courier New', monospace;
     font-weight: 900;
@@ -865,8 +881,84 @@ body::after {
     margin-top: 10px;
 }
 
+/* Efek Hover Tombol */
 .transmit-btn:hover {
-    background: #000;
-    color: #fff; /* Warna terbalik saat hover */
-    border: 2px solid #fff;
+    /* Warna latar terbalik jadi hijau */
+    background: #00ff00;
+    /* Teks jadi hitam */
+    color: #000; 
+}
+/* --- INFINITE MARQUEE (TEKS BERJALAN) --- */
+.marquee-container {
+    width: 100%;
+    overflow: hidden; /* Sembunyikan teks yang lewat batas layar */
+    background: #000; /* Latar Hitam */
+    border-top: 3px solid #fff;
+    border-bottom: 3px solid #fff;
+    padding: 15px 0;
+    margin: 40px 0; /* Jarak atas bawah */
+    transform: rotate(-2deg); /* Miringkan sedikit biar rebel! */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 10;
+}
+
+.marquee-wrapper {
+    display: flex;
+    width: fit-content; /* Lebar menyesuaikan isi */
+}
+
+.marquee-text {
+    white-space: nowrap; /* Teks jangan turun baris */
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    animation: scroll-left 20s linear infinite; /* Animasi jalan 20 detik */
+    padding-right: 50px; /* Jarak antar duplikat */
+}
+
+/* Icon di dalam teks */
+.marquee-text i {
+    color: #ff0000; /* Icon warna merah */
+    margin: 0 10px;
+    font-size: 1.2rem;
+}
+
+/* Animasi Keyframes */
+@keyframes scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Responsif HP: Font agak dikecilkan */
+@media (max-width: 768px) {
+    .marquee-text { font-size: 1rem; }
+    .marquee-container { transform: rotate(-1deg); margin: 20px 0; }
+}
+/* --- CUSTOM INDUSTRIAL SCROLLBAR --- */
+
+/* 1. Lebar Scrollbar */
+::-webkit-scrollbar {
+    width: 12px; /* Lebar batang */
+}
+
+/* 2. Jalur Scrollbar (Track) - Latar Belakang */
+::-webkit-scrollbar-track {
+    background: #0f0f0f; /* Hitam hampir pekat */
+    border-left: 1px solid #333; /* Garis pemisah tipis */
+}
+
+/* 3. Pegangan Scrollbar (Thumb) - Bagian yang digerakkan */
+::-webkit-scrollbar-thumb {
+    background-color: #333; /* Abu-abu gelap (warna besi) */
+    border: 2px solid #0f0f0f; /* Memberi jarak/border hitam */
+    border-radius: 0; /* Kotak tajam (jangan bulat!) */
+}
+
+/* 4. Efek saat Pegangan Disorot Mouse */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #8a0303; /* Berubah jadi MERAH DARAH saat disentuh */
+    cursor: pointer;
 }
