@@ -2,136 +2,167 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Tugelanboto 19</title>
-  <link rel="icon" href="assets/images/logotglbt.png" type="image/png">
+  <title>PMA Media - Gateway</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      background-image: none !important; 
+      background: #000 !important; /* Hitam mutlak untuk kesan prestisius */
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Efek Scanline Tipis ala Monitor High-End */
+    body::after {
+      content: " ";
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                  linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+      background-size: 100% 3px, 3px 100%;
+      z-index: 5; pointer-events: none;
+    }
+
+    .gateway-container {
+      position: relative;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      z-index: 20;
+    }
+
+    /* --- BRAND SECTION --- */
+    .brand-container {
+      display: flex; align-items: center; justify-content: center;
+      gap: 40px; margin-bottom: 70px;
+    }
+
+    .gateway-logo {
+      max-width: 75px; width: auto;
+      filter: grayscale(1) brightness(1.5);
+      opacity: 0.8;
+    }
+
+    .text-group {
+      display: flex; flex-direction: column;
+      border-left: 1px solid rgba(255,255,255,0.1); 
+      padding-left: 40px;
+    }
+
+    .brand-text {
+      font-family: 'Cinzel', serif;
+      font-size: 3.8rem; font-weight: 900; margin: 0;
+      letter-spacing: 15px; /* Jarak lebar agar mewah */
+      color: #fff;
+      text-shadow: 0 0 15px rgba(255,255,255,0.2);
+    }
+
+    .brand-subtext {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem; color: rgba(255,255,255,0.4);
+      letter-spacing: 7px; margin-top: 12px;
+      font-weight: 200; text-transform: uppercase;
+    }
+    
+    .brand-subtext span { color: #fff; margin: 0 10px; opacity: 0.3; }
+
+    /* --- NAVIGATION --- */
+    .button-container { display: flex; gap: 40px; }
+
+    .gate-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 300px; height: 120px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.05); 
+      color: #fff; text-decoration: none;
+      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      position: relative;
+    }
+
+    .gate-btn i { font-size: 1.2rem; margin-bottom: 15px; opacity: 0.4; transition: 0.5s; }
+    .gate-btn span.title { font-size: 0.85rem; font-weight: 600; letter-spacing: 5px; color: rgba(255,255,255,0.4); }
+
+    /* Hover State: Sederhana & Berwibawa */
+    .gate-btn:hover {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.02);
+    }
+    .gate-btn:hover i { opacity: 1; transform: translateY(-3px); }
+    .gate-btn:hover span.title { color: #fff; opacity: 1; }
+
+    /* Border Animasi Halus */
+    .gate-btn::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; width: 0; height: 1px;
+      background: #fff; transition: 0.5s;
+    }
+    .gate-btn:hover::before { width: 100%; }
+
+    @media (max-width: 800px) {
+      .brand-container { flex-direction: column; text-align: center; gap: 25px; }
+      .text-group { border-left: none; padding-left: 0; }
+      .brand-text { font-size: 2rem; letter-spacing: 8px; }
+      .button-container { flex-direction: column; gap: 15px; }
+    }
+  </style>
 </head>
 <body>
-  <body>
-  <div id="warning-gate">
-    <div class="gate-content">
-      <img src="assets/images/logotglbt.png" alt="Logo" class="gate-logo">
-      <h2 class="gate-warning">WARNING: VISUAL HAZARD</h2>
-      <p class="gate-text">CONTAINS EXPLICIT ARTWORK & HORROR THEMES</p>
-      <div class="loading-bar">
-        <div class="loading-progress"></div>
-      </div>
-      <p class="gate-status">INITIALIZING TERROR...</p>
-    </div>
-  </div>
 
-  <div class="tv-noise"></div>
-<div class="tv-noise"></div>
-  <!-- HERO -->
-  <section class="hero">
-    <img src="assets/images/logotglbt.png" alt="Tugelanboto 19" class="hero-logo">
-    <p>Streetwear • Horror • Automotive Design</p>
-  </section>
-<div class="marquee-container">
-    <div class="marquee-wrapper">
-      <span class="marquee-text">
-        WARNING: VISUAL HAZARD <i class="fa-solid fa-skull"></i> 
-        NO UNAUTHORIZED ENTRY <i class="fa-solid fa-radiation"></i> 
-        EST. 2024 <i class="fa-solid fa-biohazard"></i> 
-        PURE CHAOS & DISORDER <i class="fa-solid fa-skull"></i> 
-        WARNING: VISUAL HAZARD <i class="fa-solid fa-skull"></i> 
-        NO UNAUTHORIZED ENTRY <i class="fa-solid fa-radiation"></i> 
-        EST. 2024 <i class="fa-solid fa-biohazard"></i> 
-        PURE CHAOS & DISORDER <i class="fa-solid fa-skull"></i>
-      </span>
-      <span class="marquee-text">
-        WARNING: VISUAL HAZARD <i class="fa-solid fa-skull"></i> 
-        NO UNAUTHORIZED ENTRY <i class="fa-solid fa-radiation"></i> 
-        EST. 2024 <i class="fa-solid fa-biohazard"></i> 
-        PURE CHAOS & DISORDER <i class="fa-solid fa-skull"></i> 
-        WARNING: VISUAL HAZARD <i class="fa-solid fa-skull"></i> 
-        NO UNAUTHORIZED ENTRY <i class="fa-solid fa-radiation"></i> 
-        EST. 2024 <i class="fa-solid fa-biohazard"></i> 
-        PURE CHAOS & DISORDER <i class="fa-solid fa-skull"></i>
-      </span>
-    </div>
-  </div>
-  <!-- ABOUT -->
- <section class="about">
-    <div class="about-container">
-      <h2>ARCHITECT OF THE ABYSS</h2>
-      
-      <p>
-        Forging aesthetics from the smell of <strong>gasoline</strong> and the <strong>silence of the grave</strong>. 
-        High-detail brutality for the underground.
-      </p>
-
-      <a href="https://wa.me/6287888780999" class="btn-contact">COMMISSION NOW</a>
-
-     <a href="profile.html" class="btn-secret">
-            <i class="fa-solid fa-user-secret"></i>
-            <span class="secret-text">THE SUSPECT</span>
-          </a>
-    </div>
-  </section>
-
-  <!-- WORKS -->
- <section class="works">
-    <h2>Selected Works</h2>
-
-    <div class="grid" id="gallery-grid"></div>
-
-  </section>
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2026 Tugelanboto 19 </p>
- <div class="floating-social">
-
-   <a href="profile.html" class="socmed-btn profile" title="Who Am I?">
-      <i class="fa-solid fa-user-secret"></i>
-    </a>
+  <div class="gateway-container">
     
-    <a href="https://instagram.com/tugelanboto_" target="_blank" class="socmed-btn ig">
-      <i class="fa-brands fa-instagram"></i>
-    </a>
-
-    <a href="https://tiktok.com/@tugelan_boto" target="_blank" class="socmed-btn tiktok">
-      <i class="fa-brands fa-tiktok"></i>
-    </a>
-
-   
-
-  </div>
-  <section class="guestbook">
-    <div class="guestbook-container">
-      <h2>TRANSMIT DARK SIGNAL</h2>
-      <p class="guestbook-subtitle">Leave a message. I read everything.</p>
-
-      <form action="https://formspree.io/f/xvzavrlq" method="POST" class="terminal-form">
-        
-        <div class="input-group">
-          <span class="prefix">> USER:</span>
-          <input type="text" name="codename" placeholder="UNKNOWN_ENTITY" required>
-        </div>
-
-        <div class="input-group">
-          <span class="prefix">> MSG:</span>
-          <textarea name="message" placeholder="Type your terror here..." required></textarea>
-        </div>
-
-        <button type="submit" class="transmit-btn">
-          [ EXECUTE TRANSMISSION ]
-        </button>
-
-      </form>
-    </div>
-  </section>
-  </footer>
-  <div id="forensic-modal" class="modal">
-    <span class="close-modal">&times;</span> <div class="modal-wrapper">
-      <img class="modal-content" id="evidence-img">
-      <div class="scan-line"></div> <div class="modal-overlay-text">EVIDENCE_ANALYSIS_MODE_ACTIVE</div>
+    <div class="brand-container">
+      <img src="assets/images/logopma.png" alt="PMA" class="gateway-logo">
+      
+      <div class="text-group">
+        <h1 class="brand-text" id="cyber-brand">PMA MEDIA</h1>
+        <div class="brand-subtext">PRECISION <span>•</span> MAINTENANCE <span>•</span> AUTHENTIC</div>
+      </div>
     </div>
 
-    <div id="caption"></div>
+    <div class="button-container">
+      <a href="profile.html" class="gate-btn">
+        <i class="fa-solid fa-fingerprint"></i>
+        <span class="title">I.T DOSSIER</span>
+      </a>
+
+      <a href="portfolio.html" class="gate-btn">
+        <i class="fa-solid fa-skull"></i>
+        <span class="title">TUGELANBOTO</span>
+      </a>
+    </div>
+    
   </div>
-<script src="script.js"></script>
+
+  <script>
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const el = document.getElementById("cyber-brand");
+    const original = "PMA MEDIA";
+
+    function solve() {
+      let iteration = 0;
+      const interval = setInterval(() => {
+        el.innerText = original.split("").map((letter, index) => {
+          if (index < iteration) return original[index];
+          if (letter === " ") return " ";
+          return chars[Math.floor(Math.random() * 36)];
+        }).join("");
+
+        if (iteration >= original.length) clearInterval(interval);
+        iteration += 1 / 10; // Kecepatan lambat agar elegan
+      }, 50);
+    }
+
+    window.onload = solve;
+    el.onmouseover = solve;
+  </script>
+
 </body>
 </html>

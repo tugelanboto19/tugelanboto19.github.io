@@ -2,202 +2,233 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>THE SUSPECT - Tugelanboto 19</title>
+  <title>DOSSIER: IMAM FALAHI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* STYLING KHUSUS HALAMAN CV (HIGH-TECH DOSSIER) */
+    body { background-color: #050505; color: #d4d4d4; font-family: 'Courier New', monospace; }
+    .dossier-wrapper { max-width: 1000px; margin: 40px auto; padding: 20px; background: rgba(10, 10, 10, 0.9); border: 1px solid #333; box-shadow: 0 0 20px rgba(0, 255, 0, 0.05); }
+    .header-grid { display: grid; grid-template-columns: 200px 1fr; gap: 30px; border-bottom: 2px dashed #333; padding-bottom: 30px; margin-bottom: 30px; }
+    
+    /* Profile Image Box */
+    .img-box { position: relative; width: 100%; border: 1px solid #0f0; padding: 5px; }
+    .img-box img { width: 100%; display: block; filter: grayscale(50%) contrast(120%); }
+    .holo-scan { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: rgba(0, 255, 0, 0.5); box-shadow: 0 0 10px #0f0; animation: scan 3s infinite linear; }
+    @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+    /* Header Info */
+    .name-title h1 { color: #0f0; font-size: 2.5rem; margin: 0 0 5px 0; letter-spacing: 2px; }
+    .name-title h3 { color: #888; font-size: 1rem; margin: 0 0 15px 0; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.85rem; }
+    .contact-grid a { color: #aaa; text-decoration: none; }
+    .contact-grid a:hover { color: #0f0; }
+
+    /* Bio Summary */
+    .bio-box { background: rgba(0, 255, 0, 0.05); border-left: 4px solid #0f0; padding: 15px; margin-bottom: 30px; font-family: Arial, sans-serif; font-size: 0.9rem; line-height: 1.6; }
+
+    /* Content Layout */
+    .content-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+    .section-title { color: #0f0; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px; font-size: 1.1rem; letter-spacing: 1px; }
+
+    /* Matrix Skills */
+    .skill-category { margin-bottom: 20px; }
+    .skill-category h4 { margin: 0 0 10px 0; color: #fff; font-size: 0.9rem; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-tags span { background: #111; border: 1px solid #333; padding: 5px 10px; font-size: 0.75rem; color: #0f0; border-radius: 3px; }
+
+    /* Timeline (Experience & Education) */
+    .timeline { border-left: 2px solid #333; padding-left: 20px; margin-left: 10px; }
+    .timeline-item { position: relative; margin-bottom: 25px; }
+    .timeline-item::before { content: ''; position: absolute; left: -26px; top: 5px; width: 10px; height: 10px; background: #0f0; border-radius: 50%; box-shadow: 0 0 5px #0f0; }
+    .time-badge { display: inline-block; background: #222; color: #0f0; font-size: 0.75rem; padding: 3px 8px; margin-bottom: 8px; }
+    .job-title { font-weight: bold; color: #fff; margin: 0 0 5px 0; font-size: 1rem; }
+    .company { color: #888; font-size: 0.85rem; margin-bottom: 10px; display: block; }
+    .job-desc { font-family: Arial, sans-serif; font-size: 0.85rem; color: #bbb; line-height: 1.5; margin: 0; }
+    .job-desc li { margin-bottom: 5px; }
+
+    /* Back Button */
+    .back-btn { position: fixed; top: 20px; left: 20px; color: #0f0; text-decoration: none; font-weight: bold; font-size: 0.9rem; z-index: 100; text-shadow: 0 0 5px rgba(0,255,0,0.5); }
+    .back-btn:hover { color: #fff; }
+
+    @media (max-width: 768px) {
+      .header-grid, .content-grid { grid-template-columns: 1fr; }
+      .img-box { width: 200px; margin: 0 auto; }
+    }
+  </style>
 </head>
 <body>
 
+  <!-- Background Noise -->
   <div class="tv-noise"></div>
 
+  <!-- Gateway Return -->
   <a href="index.html" class="back-btn">
-    <i class="fa-solid fa-arrow-left"></i> ABORT MISSION
+    <i class="fa-solid fa-chevron-left"></i> BACK TO GATEWAY
   </a>
 
-  <section class="profile-container">
+  <div class="dossier-wrapper">
     
-    <div class="profile-card">
+    <!-- HEADER SECTION -->
+    <div class="header-grid">
+      <div class="img-box">
+        <!-- Ganti src ini dengan path foto profil profesional Mas Imam yang sebenarnya -->
+        <img src="assets/images/profile-pic.jpg" alt="Imam Falahi" onerror="this.src='https://via.placeholder.com/200x250/111/0f0?text=IMAGE+ENCRYPTED'">
+        <div class="holo-scan"></div>
+      </div>
       
-      <div class="profile-img">
-         <img src="assets/images/profile-pic.jpg" alt="The Artist" onerror="this.src='https://via.placeholder.com/400x500/000000/ffffff?text=NO+IMAGE'">
-         <div class="holo-scan"></div>
-      </div>
-
-      <div class="profile-info">
-        <h1 class="glitch-text">TUGELANBOTO 19</h1>
-        <p class="subtitle">VISUAL TERRORIST & DESIGNER</p>
-
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="label">STATUS:</span>
-            <span class="value" style="color:#0f0">ONLINE / ACTIVE</span>
-          </div>
-          <div class="stat-item">
-            <span class="label">XP LEVEL:</span>
-            <span class="value">99 (MAX)</span>
-          </div>
-          <div class="stat-item">
-            <span class="label">CLASS:</span>
-            <span class="value">CYBER-MAGE</span>
-          </div>
-          <div class="stat-item">
-            <span class="label">LOC:</span>
-            <span class="value">INDONESIA [REDACTED]</span>
-          </div>
-        </div>
-
-        <div class="bio-text">
-          <h3>BACKGROUND_LOGS</h3>
-          <p>
-            Born in the noise of 2-stroke engines. I create to disturb the comfortable.
-            <strong>If you want clean and cute, go elsewhere. If you want raw and chaotic, welcome home.</strong>
-          </p>
+      <div class="name-title">
+        <h1 class="scramble" data-value="IMAM FALAHI">LOADING...</h1>
+        <h3>Informatics Professional | IT Support | Licensing Consultant</h3>
+        
+        <div class="contact-grid">
+          <div><i class="fa-solid fa-location-dot"></i> Sleman, Yogyakarta, Indonesia</div>
+          <div><i class="fa-solid fa-phone"></i> 087 888 780 999</div>
+          <div><i class="fa-solid fa-envelope"></i> mobho@ymail.com</div>
+          <div><i class="fa-solid fa-globe"></i> tugelanboto19.github.io</div>
+          <div><i class="fa-brands fa-linkedin"></i> in/tugelanboto</div>
+          <div><i class="fa-brands fa-instagram"></i> tugelanboto_</div>
         </div>
       </div>
     </div>
 
-    <div class="cv-dossier" id="hacker-cv">
-        
-        <div class="dossier-header">
-            <span class="blink">>> ESTABLISHING SECURE CONNECTION...</span>
-            <h2 class="scramble" data-value="IDENTITY_FILE: IMAM FALAHI">ENCRYPTED_DATA_#X99</h2>
-            <p class="role-tag">IT SPECIALIST // DIGITAL GROWTH // VISUAL ARTIST</p>
-        </div>
-
-        <div class="dossier-grid">
-            
-            <div class="dossier-sidebar">
-                <div class="dossier-section">
-                    <h3>[ CONTACT_UPLINK ]</h3>
-                    <ul>
-                        <li><i class="fa-solid fa-phone"></i> +62 87 888 780 999</li>
-                        <li><i class="fa-solid fa-envelope"></i> mobho@ymail.com</li>
-                        <li><i class="fa-solid fa-location-dot"></i> Sleman, YK, Indonesia</li>
-                    </ul>
-                </div>
-
-                <div class="dossier-section">
-                    <h3>[ ACADEMIC_LOGS ]</h3>
-                    <div class="timeline-item">
-                        <span class="year">2022 - PRESENT</span>
-                        <strong>Univ. Siber Muhammadiyah</strong>
-                        <p>Bachelor of Informatics</p>
-                    </div>
-                    <div class="timeline-item">
-                        <span class="year">2009 - 2012</span>
-                        <strong>SMA Negeri 1 Tempel</strong>
-                        <p>Natural Sciences (IPA)</p>
-                    </div>
-                </div>
-
-                <div class="dossier-section">
-                    <h3>[ ABILITY_MATRIX ]</h3>
-                    <div class="skill-bar"><span>IT Troubleshooting</span><div class="bar"><div class="fill" style="width: 95%"></div></div></div>
-                    <div class="skill-bar"><span>Graphic Design</span><div class="bar"><div class="fill" style="width: 90%"></div></div></div>
-                    <div class="skill-bar"><span>Data Analysis</span><div class="bar"><div class="fill" style="width: 80%"></div></div></div>
-                    <div class="skill-bar"><span>Legal Admin</span><div class="bar"><div class="fill" style="width: 75%"></div></div></div>
-                </div>
-            </div>
-
-            <div class="dossier-main">
-                <div class="dossier-section">
-                    <h3>[ BIO_SUMMARY ]</h3>
-                    <p class="bio-desc">
-                        A driven individual determined to conquer various sectors: from Graphic Design and Photography to Information Technology. I chose the "Hard Mode" path to explore creativity, data analysis, and cutting-edge technological solutions.
-                    </p>
-                </div>
-
-                <div class="dossier-section">
-                    <h3>[ MISSION_HISTORY ]</h3>
-                    
-                    <div class="job-card">
-                        <div class="job-header">
-                            <h4>DIGITAL MARKETING & IT COORDINATOR</h4>
-                            <span class="job-year">2021 - PRESENT</span>
-                        </div>
-                        <span class="company">Omah Kopi Mrisen // Indonesia</span>
-                        <p>Fully responsible for IT infrastructure, system troubleshooting, and implementing technology strategies for business operations.</p>
-                    </div>
-
-                    <div class="job-card">
-                        <div class="job-header">
-                            <h4>IT STAFF & DATA SECURITY</h4>
-                            <span class="job-year">2020 - PRESENT</span>
-                        </div>
-                        <span class="company">Notary Endri Purwani, S.H.</span>
-                        <p>Managed IT system maintenance, client database security (Cyber Security), and led the digitalization of notarial processes.</p>
-                    </div>
-
-                    <div class="job-card">
-                        <div class="job-header">
-                            <h4>FREELANCE LEGAL ADMIN</h4>
-                            <span class="job-year">2014 - PRESENT</span>
-                        </div>
-                        <span class="company">Team W14 // Indonesia</span>
-                        <p>Managed banking legal documents, credit agreement administration, and coordinated legal services with notaries.</p>
-                    </div>
-                    
-                    <div class="job-card">
-                        <div class="job-header">
-                            <h4>GRAPHIC DESIGNER</h4>
-                            <span class="job-year">2013 - 2014</span>
-                        </div>
-                        <span class="company">PT. INDOKOM</span>
-                        <p>Created visual branding materials, product promotions, and adapted educational design trends.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="dossier-footer">
-            <p>>> END OF RECORD // DATA VERIFIED // READY FOR DEPLOYMENT</p>
-        </div>
+    <!-- BIO SUMMARY -->
+    <div class="bio-box">
+      <strong>[ EXECUTIVE SUMMARY ]</strong><br><br>
+      Profesional IT yang dinamis dengan pengalaman lintas industri selama lebih dari 10 tahun, menggabungkan latar belakang akademik Informatika dengan keahlian praktis di sektor legal pertanahan dan perbankan. Memiliki rekam jejak yang kuat dalam mengelola administrasi dokumen hukum yang kompleks, manajemen data perbankan berskala besar, serta bertindak sebagai konsultan perizinan berusaha (OSS RBA). Mahir dalam pemeliharaan infrastruktur IT (Hardware/Software), strategi digital marketing, serta pengembangan solusi berbasis IoT (ESP32) dan implementasi alat berbasis AI untuk meningkatkan efisiensi operasional. Sebagai mahasiswa tingkat akhir yang telah menyelesaikan seluruh beban studi dan tugas akhir, saya memiliki ketelitian tinggi dalam manajemen data dan siap berkontribusi secara profesional dalam lingkungan kerja yang menuntut adaptabilitas dan solusi teknologi inovatif.
     </div>
 
-    <div class="signature-box" style="text-align:center; margin-top:50px; opacity:0.7;">
-      <p style="font-family:'Courier New'">AUTHORIZED BY,</p>
-      <h2 style="font-family: 'Courier New'; font-size:2rem; letter-spacing:5px;">IMAM_FALAHI</h2>
+    <!-- MAIN CONTENT -->
+    <div class="content-grid">
+      
+      <!-- LEFT COLUMN (SKILLS & EDUCATION) -->
+      <div class="left-col">
+        
+        <div class="section-title">[ ABILITY_MATRIX ]</div>
+        
+        <div class="skill-category">
+          <h4>Legal & Admin</h4>
+          <div class="skill-tags">
+            <span>OSS Licensing Consultant</span><span>Admin Pertanahan</span><span>Pemetaan Lahan</span><span>Data Perbankan & Kredit</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h4>IT & Digital</h4>
+          <div class="skill-tags">
+            <span>IT Support</span><span>Network Maintenance</span><span>Digital Marketing Strategy</span><span>AI Implementation</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h4>IoT & Hardware</h4>
+          <div class="skill-tags">
+            <span>IoT Development (ESP32)</span><span>Hardware Troubleshooting</span><span>Server</span><span>Sensor Integration</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h4>Media Kreatif</h4>
+          <div class="skill-tags">
+            <span>Desain Grafis</span><span>Adobe Suite</span><span>CorelDRAW</span><span>Fotografi</span><span>Video Editing</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h4>Soft Skills</h4>
+          <div class="skill-tags">
+            <span>Analisis Data</span><span>Problem Solving</span><span>Kepemimpinan</span><span>Adaptabilitas Tinggi</span><span>Ketelitian</span>
+          </div>
+        </div>
+
+        <br><br>
+        <div class="section-title">[ ACADEMIC_LOGS ]</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="time-badge">2022 - 2026</span>
+            <h4 class="job-title">Sarjana Informatika</h4>
+            <span class="company">Universitas Siber Muhammadiyah, Sleman</span>
+            <p class="job-desc">Telah menyelesaikan seluruh mata kuliah dan Tugas Akhir (Menunggu Yudisium & Wisuda). Fokus pada penguasaan spektrum TI yang luas, meliputi rekayasa perangkat lunak, infrastruktur jaringan, pengembangan sistem, hingga keamanan digital.</p>
+          </div>
+          <div class="timeline-item">
+            <span class="time-badge">2009 - 2012</span>
+            <h4 class="job-title">Ilmu Pengetahuan Alam (IPA)</h4>
+            <span class="company">SMA Negeri 1 Tempel, Sleman</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN (EXPERIENCE) -->
+      <div class="right-col">
+        <div class="section-title">[ MISSION_HISTORY ]</div>
+        
+        <div class="timeline">
+          
+          <div class="timeline-item">
+            <span class="time-badge">2020 - Sekarang</span>
+            <h4 class="job-title">Staff IT & Administrasi Legal</h4>
+            <span class="company">Notaris - PPAT Endri Purwani, S.H., M.Kn., Sleman</span>
+            <ul class="job-desc">
+              <li>Mengelola administrasi data perbankan, entri data dokumen legal, dan koordinasi perjanjian kredit klien.</li>
+              <li>Melakukan pemetaan lahan dan pengelolaan database dokumen pertanahan (fisik & digitalisasi arsip).</li>
+              <li>Bertanggung jawab atas pemeliharaan infrastruktur IT, troubleshooting, dan keamanan sistem database kantor.</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">2022 - Sekarang</span>
+            <h4 class="job-title">Konsultan Perizinan (Freelance)</h4>
+            <span class="company">HANDHOLD, Sleman</span>
+            <ul class="job-desc">
+              <li>Konsultan teknis pengurusan legalitas usaha melalui sistem OSS RBA (NIB, Izin Usaha, dan Sertifikasi).</li>
+              <li>Pendampingan komprehensif bagi pelaku usaha dalam memenuhi standar regulasi dan perizinan operasional.</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">2021 - Sekarang</span>
+            <h4 class="job-title">IT & Digital Marketing</h4>
+            <span class="company">Omah Kopi Mrisen, Sleman</span>
+            <ul class="job-desc">
+              <li>Manajemen operasional IT harian (Sistem POS, Jaringan) dan pemeliharaan hardware/perangkat pendukung.</li>
+              <li>Produksi konten kreatif (fotografi, desain grafis) dan pengembangan strategi pemasaran media sosial.</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">2013 - 2014</span>
+            <h4 class="job-title">Desain Grafis</h4>
+            <span class="company">PT. INDOKOM, Sleman</span>
+            <ul class="job-desc">
+              <li>Produksi aset visual untuk branding produk dan materi kampanye pemasaran digital.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
     </div>
+  </div>
 
-  </section>
-
-<script src="script.js"></script>
-<script>
-    // TEXT SCRAMBLE EFFECT (DECRYPTION)
+  <script>
+    // TEXT SCRAMBLE EFFECT
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
-
-    document.querySelector(".scramble").onmouseover = event => {  
-        let iteration = 0;
-        
-        const interval = setInterval(() => {
-            event.target.innerText = event.target.innerText
-            .split("")
-            .map((letter, index) => {
-                if(index < iteration) {
-                return event.target.dataset.value[index];
-                }
-            
-                return letters[Math.floor(Math.random() * 26)]
-            })
-            .join("");
-            
-            if(iteration >= event.target.dataset.value.length){ 
-            clearInterval(interval);
-            }
-            
-            iteration += 1 / 3;
-        }, 30);
-    }
-
-    // Trigger effect automatically on load
     window.onload = function() {
         const headerName = document.querySelector(".scramble");
         if(headerName) {
-            headerName.dispatchEvent(new Event('mouseover')); 
+            let iteration = 0;
+            const interval = setInterval(() => {
+                headerName.innerText = headerName.innerText.split("").map((letter, index) => {
+                    if(index < iteration) { return headerName.dataset.value[index]; }
+                    return letters[Math.floor(Math.random() * 26)]
+                }).join("");
+                if(iteration >= headerName.dataset.value.length){ clearInterval(interval); }
+                iteration += 1 / 3;
+            }, 30);
         }
     }
-</script>
-
+  </script>
 </body>
-</html> 
+</html>
