@@ -2,233 +2,272 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>DOSSIER: IMAM FALAHI</title>
+  <title>Curriculum Vitae - Imam Falahi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <meta name="description" content="Professional Resume of Imam Falahi - IT Support, Web Developer, and Legal Administrator.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    /* STYLING KHUSUS HALAMAN CV (HIGH-TECH DOSSIER) */
-    body { background-color: #050505; color: #d4d4d4; font-family: 'Courier New', monospace; }
-    .dossier-wrapper { max-width: 1000px; margin: 40px auto; padding: 20px; background: rgba(10, 10, 10, 0.9); border: 1px solid #333; box-shadow: 0 0 20px rgba(0, 255, 0, 0.05); }
-    .header-grid { display: grid; grid-template-columns: 200px 1fr; gap: 30px; border-bottom: 2px dashed #333; padding-bottom: 30px; margin-bottom: 30px; }
+    /* ROOT & RESET: CLEAN MODERN TECH VIBE */
+    body, html {
+      margin: 0; padding: 0; min-height: 100vh;
+      background-color: #0d1117; /* Dark mode ala GitHub */
+      color: #c9d1d9;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: #8b949e; }
+
+    /* NAVIGATION BAR */
+    .top-nav {
+      background: rgba(13, 17, 23, 0.9);
+      border-bottom: 1px solid #30363d;
+      padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px);
+    }
+    .nav-brand { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #58a6ff; font-size: 1.1rem; }
+    .btn-back {
+      color: #c9d1d9; text-decoration: none; font-size: 0.9rem; font-weight: 600;
+      border: 1px solid #30363d; padding: 8px 16px; border-radius: 6px; transition: 0.2s;
+    }
+    .btn-back:hover { background: #30363d; color: #fff; }
+
+    /* MAIN CONTAINER */
+    .cv-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+
+    /* HEADER: PROFILE SECTION */
+    .profile-header {
+      display: flex; gap: 30px; align-items: center; margin-bottom: 40px;
+      padding-bottom: 30px; border-bottom: 1px solid #30363d;
+    }
+    .profile-img {
+      width: 140px; height: 140px; border-radius: 12px;
+      object-fit: cover; border: 2px solid #58a6ff;
+      box-shadow: 0 0 20px rgba(88, 166, 255, 0.1); flex-shrink: 0;
+    }
+    .profile-info h1 { margin: 0 0 5px 0; font-size: 2.2rem; color: #fff; font-weight: 800;}
+    .profile-info h2 { margin: 0 0 15px 0; font-size: 1.1rem; color: #8b949e; font-weight: 400;}
     
-    /* Profile Image Box */
-    .img-box { position: relative; width: 100%; border: 1px solid #0f0; padding: 5px; }
-    .img-box img { width: 100%; display: block; filter: grayscale(50%) contrast(120%); }
-    .holo-scan { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: rgba(0, 255, 0, 0.5); box-shadow: 0 0 10px #0f0; animation: scan 3s infinite linear; }
-    @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+    .contact-info { display: flex; flex-wrap: wrap; gap: 15px; font-size: 0.85rem; color: #8b949e; margin-bottom: 20px;}
+    .contact-info div { display: flex; align-items: center; gap: 6px; }
+    .contact-info i { color: #58a6ff; }
 
-    /* Header Info */
-    .name-title h1 { color: #0f0; font-size: 2.5rem; margin: 0 0 5px 0; letter-spacing: 2px; }
-    .name-title h3 { color: #888; font-size: 1rem; margin: 0 0 15px 0; }
-    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.85rem; }
-    .contact-grid a { color: #aaa; text-decoration: none; }
-    .contact-grid a:hover { color: #0f0; }
+    /* DOWNLOAD PDF BUTTON */
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #238636; color: #fff; text-decoration: none;
+      padding: 10px 20px; border-radius: 6px; font-size: 0.9rem; font-weight: 600;
+      transition: 0.2s; border: 1px solid rgba(240, 246, 252, 0.1);
+    }
+    .btn-download:hover { background: #2ea043; }
 
-    /* Bio Summary */
-    .bio-box { background: rgba(0, 255, 0, 0.05); border-left: 4px solid #0f0; padding: 15px; margin-bottom: 30px; font-family: Arial, sans-serif; font-size: 0.9rem; line-height: 1.6; }
+    /* SECTION STYLING */
+    .section-title {
+      font-size: 1.3rem; color: #fff; font-weight: 600;
+      margin: 0 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #30363d;
+      display: inline-block;
+    }
+    .cv-section { margin-bottom: 40px; }
 
-    /* Content Layout */
-    .content-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
-    .section-title { color: #0f0; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px; font-size: 1.1rem; letter-spacing: 1px; }
+    .summary-text { font-size: 0.95rem; color: #c9d1d9; text-align: justify; }
 
-    /* Matrix Skills */
-    .skill-category { margin-bottom: 20px; }
-    .skill-category h4 { margin: 0 0 10px 0; color: #fff; font-size: 0.9rem; }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-    .skill-tags span { background: #111; border: 1px solid #333; padding: 5px 10px; font-size: 0.75rem; color: #0f0; border-radius: 3px; }
+    /* EXPERIENCE & EDUCATION TIMELINE */
+    .timeline { border-left: 2px solid #30363d; margin-left: 10px; padding-left: 25px; }
+    .timeline-item { position: relative; margin-bottom: 30px; }
+    .timeline-item:last-child { margin-bottom: 0; }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -32px; top: 6px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #0d1117; border: 2px solid #58a6ff;
+    }
+    
+    .job-title { margin: 0; font-size: 1.1rem; color: #fff; font-weight: 600; }
+    .company { margin: 2px 0 8px 0; font-size: 0.9rem; color: #8b949e; font-weight: 600;}
+    .company i { margin-right: 5px; }
+    .job-desc { margin: 0; font-size: 0.9rem; color: #c9d1d9; }
+    .job-desc ul { margin: 8px 0 0 0; padding-left: 20px; }
+    .job-desc li { margin-bottom: 4px; }
 
-    /* Timeline (Experience & Education) */
-    .timeline { border-left: 2px solid #333; padding-left: 20px; margin-left: 10px; }
-    .timeline-item { position: relative; margin-bottom: 25px; }
-    .timeline-item::before { content: ''; position: absolute; left: -26px; top: 5px; width: 10px; height: 10px; background: #0f0; border-radius: 50%; box-shadow: 0 0 5px #0f0; }
-    .time-badge { display: inline-block; background: #222; color: #0f0; font-size: 0.75rem; padding: 3px 8px; margin-bottom: 8px; }
-    .job-title { font-weight: bold; color: #fff; margin: 0 0 5px 0; font-size: 1rem; }
-    .company { color: #888; font-size: 0.85rem; margin-bottom: 10px; display: block; }
-    .job-desc { font-family: Arial, sans-serif; font-size: 0.85rem; color: #bbb; line-height: 1.5; margin: 0; }
-    .job-desc li { margin-bottom: 5px; }
+    /* SKILLS GRID */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;
+    }
+    .skill-card {
+      background: #161b22; border: 1px solid #30363d; padding: 15px; border-radius: 8px;
+    }
+    .skill-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #c9d1d9;}
+    .skill-bar { width: 100%; height: 6px; background: #0d1117; border-radius: 3px; overflow: hidden; border: 1px solid #30363d;}
+    .skill-fill { height: 100%; background: #58a6ff; border-radius: 3px;}
 
-    /* Back Button */
-    .back-btn { position: fixed; top: 20px; left: 20px; color: #0f0; text-decoration: none; font-weight: bold; font-size: 0.9rem; z-index: 100; text-shadow: 0 0 5px rgba(0,255,0,0.5); }
-    .back-btn:hover { color: #fff; }
-
-    @media (max-width: 768px) {
-      .header-grid, .content-grid { grid-template-columns: 1fr; }
-      .img-box { width: 200px; margin: 0 auto; }
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 600px) {
+      .profile-header { flex-direction: column; text-align: center; }
+      .contact-info { justify-content: center; }
+      .timeline { padding-left: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Background Noise -->
-  <div class="tv-noise"></div>
+  <!-- NAVBAR -->
+  <nav class="top-nav">
+    <div class="nav-brand">PMA_MEDIA / CV</div>
+    <a href="index.html" class="btn-back"><i class="fa-solid fa-house"></i> Home</a>
+  </nav>
 
-  <!-- Gateway Return -->
-  <a href="index.html" class="back-btn">
-    <i class="fa-solid fa-chevron-left"></i> BACK TO GATEWAY
-  </a>
+  <!-- MAIN CV CONTAINER -->
+  <main class="cv-container">
 
-  <div class="dossier-wrapper">
-    
-    <!-- HEADER SECTION -->
-    <div class="header-grid">
-      <div class="img-box">
-        <!-- Ganti src ini dengan path foto profil profesional Mas Imam yang sebenarnya -->
-        <img src="assets/images/profile-pic.jpg" alt="Imam Falahi" onerror="this.src='https://via.placeholder.com/200x250/111/0f0?text=IMAGE+ENCRYPTED'">
-        <div class="holo-scan"></div>
-      </div>
-      
-      <div class="name-title">
-        <h1 class="scramble" data-value="IMAM FALAHI">LOADING...</h1>
-        <h3>Informatics Professional | IT Support | Licensing Consultant</h3>
+    <!-- 1. PROFILE SECTION -->
+    <header class="profile-header">
+      <img src="assets/images/pasfoto.jpeg" alt="Imam Falahi" class="profile-img">
+      <div class="profile-info">
+        <h1>Imam Falahi</h1>
+        <h2>IT Support, Legal Administrator & Developer</h2>
         
-        <div class="contact-grid">
-          <div><i class="fa-solid fa-location-dot"></i> Sleman, Yogyakarta, Indonesia</div>
-          <div><i class="fa-solid fa-phone"></i> 087 888 780 999</div>
+        <div class="contact-info">
+          <div><i class="fa-solid fa-calendar"></i> 19 Desember 1993</div>
+          <div><i class="fa-solid fa-location-dot"></i> Sleman, Yogyakarta</div>
           <div><i class="fa-solid fa-envelope"></i> mobho@ymail.com</div>
-          <div><i class="fa-solid fa-globe"></i> tugelanboto19.github.io</div>
-          <div><i class="fa-brands fa-linkedin"></i> in/tugelanboto</div>
-          <div><i class="fa-brands fa-instagram"></i> tugelanboto_</div>
         </div>
+
+       <a href="https://drive.google.com/file/d/1b3LyM1p7LbEcS326nADY5QiPsrxpAZBo/view?usp=sharing" target="_blank" class="btn-download">
+  <i class="fa-solid fa-file-pdf"></i> Download CV (PDF)
+</a>
       </div>
-    </div>
+    </header>
 
-    <!-- BIO SUMMARY -->
-    <div class="bio-box">
-      <strong>[ EXECUTIVE SUMMARY ]</strong><br><br>
-      Profesional IT yang dinamis dengan pengalaman lintas industri selama lebih dari 10 tahun, menggabungkan latar belakang akademik Informatika dengan keahlian praktis di sektor legal pertanahan dan perbankan. Memiliki rekam jejak yang kuat dalam mengelola administrasi dokumen hukum yang kompleks, manajemen data perbankan berskala besar, serta bertindak sebagai konsultan perizinan berusaha (OSS RBA). Mahir dalam pemeliharaan infrastruktur IT (Hardware/Software), strategi digital marketing, serta pengembangan solusi berbasis IoT (ESP32) dan implementasi alat berbasis AI untuk meningkatkan efisiensi operasional. Sebagai mahasiswa tingkat akhir yang telah menyelesaikan seluruh beban studi dan tugas akhir, saya memiliki ketelitian tinggi dalam manajemen data dan siap berkontribusi secara profesional dalam lingkungan kerja yang menuntut adaptabilitas dan solusi teknologi inovatif.
-    </div>
+    <!-- 2. PROFESSIONAL SUMMARY -->
+    <section class="cv-section">
+      <h3 class="section-title">Professional Summary</h3>
+      <p class="summary-text">
+        Seorang profesional yang berdedikasi dengan keahlian teknis multifaset. Memiliki latar belakang kuat di bidang Teknik Informatika dengan pengalaman praktis dalam infrastruktur I.T, pengembangan web, serta pengelolaan perangkat IoT (ESP32). Selain kemampuan teknis, saya juga memiliki jam terbang yang tinggi dalam bidang Administrasi Legal korporat dan penyelesaian dokumen Perizinan Berusaha Berbasis Risiko (OSS RBA) & SIMBG. 
+      </p>
+    </section>
 
-    <!-- MAIN CONTENT -->
-    <div class="content-grid">
-      
-      <!-- LEFT COLUMN (SKILLS & EDUCATION) -->
-      <div class="left-col">
+    <!-- 3. WORK EXPERIENCE -->
+    <section class="cv-section">
+      <h3 class="section-title">Work Experience</h3>
+      <div class="timeline">
         
-        <div class="section-title">[ ABILITY_MATRIX ]</div>
-        
-        <div class="skill-category">
-          <h4>Legal & Admin</h4>
-          <div class="skill-tags">
-            <span>OSS Licensing Consultant</span><span>Admin Pertanahan</span><span>Pemetaan Lahan</span><span>Data Perbankan & Kredit</span>
+        <!-- Experience 1 -->
+        <div class="timeline-item">
+          <h4 class="job-title">Staff Legal, Lapangan & I.T Support</h4>
+          <p class="company"><i class="fa-solid fa-building"></i> Kantor Notaris/PPAT Endri Purwani, SH, M.Kn.</p>
+          <div class="job-desc">
+            <ul>
+              <li>Memastikan keandalan infrastruktur jaringan, hardware, dan sistem I.T kantor.</li>
+              <li>Mengelola administrasi legal, pemberkasan dokumen kenotariatan, dan proses operasional lapangan.</li>
+              <li>Menyelesaikan permasalahan teknis (troubleshooting) untuk menunjang produktivitas staf lainnya.</li>
+            </ul>
           </div>
         </div>
 
-        <div class="skill-category">
-          <h4>IT & Digital</h4>
-          <div class="skill-tags">
-            <span>IT Support</span><span>Network Maintenance</span><span>Digital Marketing Strategy</span><span>AI Implementation</span>
+        <!-- Experience 2 -->
+        <div class="timeline-item">
+          <h4 class="job-title">Founder & Digital Consultant</h4>
+          <p class="company"><i class="fa-solid fa-globe"></i> PMA Media (pmamedia.web.id) | April 2026 - Present</p>
+          <div class="job-desc">
+            <ul>
+              <li>Membangun dan mengelola agensi digital yang berfokus pada teknologi, legalitas, dan desain grafis.</li>
+              <li>Menyediakan layanan konsultasi perizinan, pengembangan website, dan pembuatan aset visual (Graphic Design/Photoshop).</li>
+            </ul>
           </div>
         </div>
 
-        <div class="skill-category">
-          <h4>IoT & Hardware</h4>
-          <div class="skill-tags">
-            <span>IoT Development (ESP32)</span><span>Hardware Troubleshooting</span><span>Server</span><span>Sensor Integration</span>
+        <!-- Experience 3 -->
+        <div class="timeline-item">
+          <h4 class="job-title">Freelance Licensing Consultant</h4>
+          <p class="company"><i class="fa-solid fa-briefcase"></i> HANDHOLD & Independent</p>
+          <div class="job-desc">
+            <ul>
+              <li>Memberikan pendampingan profesional untuk pengurusan Perizinan Berusaha Berbasis Risiko (OSS RBA).</li>
+              <li>Mengurus administrasi Persetujuan Bangunan Gedung (SIMBG) untuk klien komersial dan residensial.</li>
+            </ul>
           </div>
         </div>
 
-        <div class="skill-category">
-          <h4>Media Kreatif</h4>
-          <div class="skill-tags">
-            <span>Desain Grafis</span><span>Adobe Suite</span><span>CorelDRAW</span><span>Fotografi</span><span>Video Editing</span>
-          </div>
-        </div>
-
-        <div class="skill-category">
-          <h4>Soft Skills</h4>
-          <div class="skill-tags">
-            <span>Analisis Data</span><span>Problem Solving</span><span>Kepemimpinan</span><span>Adaptabilitas Tinggi</span><span>Ketelitian</span>
-          </div>
-        </div>
-
-        <br><br>
-        <div class="section-title">[ ACADEMIC_LOGS ]</div>
-        <div class="timeline">
-          <div class="timeline-item">
-            <span class="time-badge">2022 - 2026</span>
-            <h4 class="job-title">Sarjana Informatika</h4>
-            <span class="company">Universitas Siber Muhammadiyah, Sleman</span>
-            <p class="job-desc">Telah menyelesaikan seluruh mata kuliah dan Tugas Akhir (Menunggu Yudisium & Wisuda). Fokus pada penguasaan spektrum TI yang luas, meliputi rekayasa perangkat lunak, infrastruktur jaringan, pengembangan sistem, hingga keamanan digital.</p>
-          </div>
-          <div class="timeline-item">
-            <span class="time-badge">2009 - 2012</span>
-            <h4 class="job-title">Ilmu Pengetahuan Alam (IPA)</h4>
-            <span class="company">SMA Negeri 1 Tempel, Sleman</span>
+        <!-- Experience 4 -->
+        <div class="timeline-item">
+          <h4 class="job-title">Digital Marketing & Analytics</h4>
+          <p class="company"><i class="fa-solid fa-chart-line"></i> Omah Kopi Mrisen</p>
+          <div class="job-desc">
+            <ul>
+              <li>Mengelola kampanye pemasaran digital dan merancang strategi promosi.</li>
+              <li>Menganalisis data transaksi penjualan kedai untuk menemukan pola perilaku konsumen menggunakan metode data mining.</li>
+            </ul>
           </div>
         </div>
 
       </div>
+    </section>
 
-      <!-- RIGHT COLUMN (EXPERIENCE) -->
-      <div class="right-col">
-        <div class="section-title">[ MISSION_HISTORY ]</div>
-        
-        <div class="timeline">
-          
-          <div class="timeline-item">
-            <span class="time-badge">2020 - Sekarang</span>
-            <h4 class="job-title">Staff IT & Administrasi Legal</h4>
-            <span class="company">Notaris - PPAT Endri Purwani, S.H., M.Kn., Sleman</span>
-            <ul class="job-desc">
-              <li>Mengelola administrasi data perbankan, entri data dokumen legal, dan koordinasi perjanjian kredit klien.</li>
-              <li>Melakukan pemetaan lahan dan pengelolaan database dokumen pertanahan (fisik & digitalisasi arsip).</li>
-              <li>Bertanggung jawab atas pemeliharaan infrastruktur IT, troubleshooting, dan keamanan sistem database kantor.</li>
+    <!-- 4. EDUCATION -->
+    <section class="cv-section">
+      <h3 class="section-title">Education</h3>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4 class="job-title">S1 - Teknik Informatika</h4>
+          <p class="company"><i class="fa-solid fa-graduation-cap"></i> Universitas Siber Muhammadiyah (Yudisium 2026)</p>
+          <div class="job-desc">
+            <ul>
+              <li><b>Tugas Akhir:</b> "Analisis Pola Perilaku Konsumen Melalui Association Rule Mining".</li>
+              <li><b>Dosen Pembimbing:</b> Ibu Latifah Iriani, M.Kom.</li>
+              <li><b>Publikasi:</b> Jurnal Edukasi dan Penelitian Informatika (JEPIN).</li>
             </ul>
           </div>
-
-          <div class="timeline-item">
-            <span class="time-badge">2022 - Sekarang</span>
-            <h4 class="job-title">Konsultan Perizinan (Freelance)</h4>
-            <span class="company">HANDHOLD, Sleman</span>
-            <ul class="job-desc">
-              <li>Konsultan teknis pengurusan legalitas usaha melalui sistem OSS RBA (NIB, Izin Usaha, dan Sertifikasi).</li>
-              <li>Pendampingan komprehensif bagi pelaku usaha dalam memenuhi standar regulasi dan perizinan operasional.</li>
-            </ul>
-          </div>
-
-          <div class="timeline-item">
-            <span class="time-badge">2021 - Sekarang</span>
-            <h4 class="job-title">IT & Digital Marketing</h4>
-            <span class="company">Omah Kopi Mrisen, Sleman</span>
-            <ul class="job-desc">
-              <li>Manajemen operasional IT harian (Sistem POS, Jaringan) dan pemeliharaan hardware/perangkat pendukung.</li>
-              <li>Produksi konten kreatif (fotografi, desain grafis) dan pengembangan strategi pemasaran media sosial.</li>
-            </ul>
-          </div>
-
-          <div class="timeline-item">
-            <span class="time-badge">2013 - 2014</span>
-            <h4 class="job-title">Desain Grafis</h4>
-            <span class="company">PT. INDOKOM, Sleman</span>
-            <ul class="job-desc">
-              <li>Produksi aset visual untuk branding produk dan materi kampanye pemasaran digital.</li>
-            </ul>
-          </div>
-
         </div>
       </div>
+    </section>
 
-    </div>
-  </div>
+    <!-- 5. CORE SKILLS -->
+    <section class="cv-section">
+      <h3 class="section-title">Core Competencies</h3>
+      <div class="skills-grid">
+        
+        <div class="skill-card">
+          <div class="skill-header"><span>IT Network & Support</span> <span>95%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width: 95%;"></div></div>
+        </div>
 
-  <script>
-    // TEXT SCRAMBLE EFFECT
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
-    window.onload = function() {
-        const headerName = document.querySelector(".scramble");
-        if(headerName) {
-            let iteration = 0;
-            const interval = setInterval(() => {
-                headerName.innerText = headerName.innerText.split("").map((letter, index) => {
-                    if(index < iteration) { return headerName.dataset.value[index]; }
-                    return letters[Math.floor(Math.random() * 26)]
-                }).join("");
-                if(iteration >= headerName.dataset.value.length){ clearInterval(interval); }
-                iteration += 1 / 3;
-            }, 30);
-        }
-    }
-  </script>
+        <div class="skill-card">
+          <div class="skill-header"><span>OSS RBA & Legal Admin</span> <span>90%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width: 90%;"></div></div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-header"><span>Web Dev (HTML/CSS/JS)</span> <span>85%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width: 85%;"></div></div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-header"><span>Graphic Design (Photoshop)</span> <span>95%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width: 95%;"></div></div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-header"><span>Hardware & IoT (ESP32)</span> <span>80%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-header"><span>Data Analytics (Mining)</span> <span>85%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width: 85%;"></div></div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
 </body>
 </html>

@@ -2,166 +2,447 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PMA Media - Gateway</title>
+  <title>PMA Media - Cyber Command</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PMA Media - Precision Maintenance Authentic. Cyber Security & Visual Hazard Gallery.">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
+  <!-- Menambahkan Share Tech Mono untuk font utama (Hacker Style) -->
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Montserrat:wght@200;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
+    /* ROOT & RESET */
     body, html {
-      margin: 0; padding: 0; height: 100%;
-      background-image: none !important; 
-      background: #000 !important; /* Hitam mutlak untuk kesan prestisius */
+      margin: 0; padding: 0; min-height: 100vh;
+      background-color: #030303 !important;
       color: #fff;
       font-family: 'Montserrat', sans-serif;
-      overflow: hidden;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+      display: flex; justify-content: center; align-items: center;
+      box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
     }
 
-    /* Efek Scanline Tipis ala Monitor High-End */
-    body::after {
-      content: " ";
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                  linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-      background-size: 100% 3px, 3px 100%;
-      z-index: 5; pointer-events: none;
+    /* 1. EFEK CRT MONITOR SCANLINES */
+    .crt-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+      background-size: 100% 3px;
+      z-index: 999; pointer-events: none; 
     }
 
-    .gateway-container {
-      position: relative;
-      height: 100vh;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      z-index: 20;
+    /* BENTO GRID ARCHITECTURE */
+    .dashboard-container {
+      width: 95%; max-width: 1100px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: minmax(110px, auto);
+      gap: 15px; padding: 40px 0; z-index: 10;
+      animation: screen-flicker 0.2s infinite;
     }
 
-    /* --- BRAND SECTION --- */
-    .brand-container {
-      display: flex; align-items: center; justify-content: center;
-      gap: 40px; margin-bottom: 70px;
+    @keyframes screen-flicker {
+      0% { opacity: 0.98; }
+      50% { opacity: 1; filter: brightness(1.02); }
+      100% { opacity: 0.99; }
     }
 
-    .gateway-logo {
-      max-width: 75px; width: auto;
-      filter: grayscale(1) brightness(1.5);
-      opacity: 0.8;
+    /* WIDGET BOX STYLING */
+    .widget {
+      background: rgba(12, 12, 12, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px; padding: 25px;
+      display: flex; flex-direction: column; position: relative;
+      overflow: hidden; backdrop-filter: blur(10px);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
     }
+    .widget:hover { border-color: rgba(255, 255, 255, 0.3); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,255,0,0.1); }
 
-    .text-group {
-      display: flex; flex-direction: column;
-      border-left: 1px solid rgba(255,255,255,0.1); 
-      padding-left: 40px;
-    }
+    /* WIDGET ALLOCATIONS */
+    .w-brand { grid-column: span 2; grid-row: span 2; justify-content: center; }
+    .w-status { grid-column: span 1; grid-row: span 1; justify-content: space-between; }
+    .w-uplink { grid-column: span 1; grid-row: span 1; justify-content: space-between; }
+    .w-services { grid-column: span 1; grid-row: span 1; justify-content: center;}
+    .w-vitals { grid-column: span 1; grid-row: span 1; justify-content: center;}
+    .w-terminal { grid-column: span 4; grid-row: span 2; background: rgba(5, 5, 5, 0.95); border-color: #222; height: 220px; overflow-y: auto; }
+    .w-nav-cv { grid-column: span 2; grid-row: span 2; }
+    .w-nav-porto { grid-column: span 2; grid-row: span 2; }
 
-    .brand-text {
-      font-family: 'Cinzel', serif;
-      font-size: 3.8rem; font-weight: 900; margin: 0;
-      letter-spacing: 15px; /* Jarak lebar agar mewah */
-      color: #fff;
-      text-shadow: 0 0 15px rgba(255,255,255,0.2);
-    }
+    .widget-title { font-size: 0.65rem; color: #888; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;}
 
-    .brand-subtext {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.7rem; color: rgba(255,255,255,0.4);
-      letter-spacing: 7px; margin-top: 12px;
-      font-weight: 200; text-transform: uppercase;
+    /* --- BRAND WIDGET --- */
+    .brand-content { display: flex; align-items: center; justify-content: flex-start; gap: 35px; }
+    
+    .brand-logo { 
+      width: 120px; 
+      filter: grayscale(1) brightness(1.5) drop-shadow(0 0 10px rgba(255,255,255,0.1)); 
+      cursor: crosshair;
     }
     
-    .brand-subtext span { color: #fff; margin: 0 10px; opacity: 0.3; }
-
-    /* --- NAVIGATION --- */
-    .button-container { display: flex; gap: 40px; }
-
-    .gate-btn {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      width: 300px; height: 120px;
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.05); 
-      color: #fff; text-decoration: none;
-      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-      position: relative;
+    /* Efek Glitch RGB pada Logo Gambar saat Hover */
+    .brand-logo:hover { animation: logo-glitch 0.2s infinite; }
+    @keyframes logo-glitch {
+      0%, 100% { transform: translate(0); filter: grayscale(1) brightness(1.5); }
+      20% { transform: translate(-3px, 2px); filter: grayscale(1) brightness(2) drop-shadow(0 0 15px rgba(0,255,0,0.8)); }
+      40% { transform: translate(3px, -2px); filter: grayscale(1) brightness(0.5); }
+      60% { transform: translate(-3px, -2px); filter: grayscale(1) brightness(2) drop-shadow(0 0 15px rgba(255,0,0,0.8)); }
+      80% { transform: translate(3px, 2px); filter: grayscale(1) brightness(1.5) drop-shadow(0 0 15px rgba(0,255,255,0.8)); }
     }
 
-    .gate-btn i { font-size: 1.2rem; margin-bottom: 15px; opacity: 0.4; transition: 0.5s; }
-    .gate-btn span.title { font-size: 0.85rem; font-weight: 600; letter-spacing: 5px; color: rgba(255,255,255,0.4); }
-
-    /* Hover State: Sederhana & Berwibawa */
-    .gate-btn:hover {
-      border-color: rgba(255,255,255,0.4);
-      background: rgba(255,255,255,0.02);
+    .brand-text-box { display: flex; flex-direction: column; }
+    
+    /* Teks PMA MEDIA diubah jadi font Hacker/Cyber */
+    .brand-text-box h1 {
+      font-family: 'Share Tech Mono', monospace; /* Font Hacking */
+      font-size: 3.8rem; font-weight: 400;
+      margin: 0 0 5px 0; letter-spacing: 4px;
+      color: #fff;
+      text-shadow: 0 0 15px rgba(255,255,255,0.4);
+      cursor: crosshair;
     }
-    .gate-btn:hover i { opacity: 1; transform: translateY(-3px); }
-    .gate-btn:hover span.title { color: #fff; opacity: 1; }
-
-    /* Border Animasi Halus */
-    .gate-btn::before {
-      content: ''; position: absolute;
-      top: 0; left: 0; width: 0; height: 1px;
-      background: #fff; transition: 0.5s;
+    
+    /* Teks Kepanjangan diubah jadi font Terminal Matrix */
+    .brand-text-box p { 
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; letter-spacing: 4px; color: #0f0; /* Hijau terminal */
+      margin: 0; font-weight: 700; line-height: 1.8;
+      white-space: pre-wrap; 
+      cursor: crosshair;
     }
-    .gate-btn:hover::before { width: 100%; }
 
-    @media (max-width: 800px) {
-      .brand-container { flex-direction: column; text-align: center; gap: 25px; }
-      .text-group { border-left: none; padding-left: 0; }
-      .brand-text { font-size: 2rem; letter-spacing: 8px; }
-      .button-container { flex-direction: column; gap: 15px; }
+    /* STATUS WIDGET */
+    .dot { width: 8px; height: 8px; background: #0f0; border-radius: 50%; box-shadow: 0 0 10px #0f0; animation: pulse 2s infinite; }
+    .clock { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 5px;}
+    .location { font-size: 0.65rem; color: #666; margin-top: 2px; }
+
+    /* UPLINK WIDGET */
+    .uplink-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff; text-decoration: none; padding: 10px; border-radius: 4px;
+      font-size: 0.8rem; font-weight: 600; transition: 0.3s; width: 100%; box-sizing: border-box;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .uplink-btn:hover { background: rgba(0, 255, 0, 0.1); border-color: #0f0; color: #0f0; letter-spacing: 2px; }
+
+    /* SERVICES WIDGET */
+    .service-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag { font-size: 0.6rem; border: 1px solid #333; padding: 4px 8px; border-radius: 2px; color: #0f0; background: rgba(0,255,0,0.05); font-family: 'JetBrains Mono', monospace;}
+
+    /* VITALS WIDGET */
+    .vital-row { margin-bottom: 8px; }
+    .vital-label { font-size: 0.6rem; color: #aaa; display: flex; justify-content: space-between; margin-bottom: 3px; font-family: 'JetBrains Mono', monospace;}
+    .vital-bar { width: 100%; height: 4px; background: #222; border-radius: 2px; overflow: hidden; }
+    .vital-fill { height: 100%; background: #0f0; box-shadow: 0 0 5px #0f0;}
+    .cpu-fill { width: 45%; animation: cpu-load 3s infinite alternate ease-in-out; }
+    .ram-fill { width: 68%; }
+
+    /* TERMINAL CHATBOT WIDGET */
+    .terminal-container { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.6; display: flex; flex-direction: column; gap: 5px; }
+    .w-terminal::-webkit-scrollbar { width: 5px; }
+    .w-terminal::-webkit-scrollbar-track { background: #111; }
+    .w-terminal::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+    .log-line { margin: 0; }
+    .cmd-text { color: #aaa; }
+    .sys-text { color: #0dcaf0; } 
+    .txt-text { color: #0f0; } 
+    .warn-text { color: #ff4444; font-weight: bold; } 
+    .cursor { display: inline-block; width: 8px; height: 13px; background: #0f0; animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 5px;}
+
+    /* NAVIGATION BUTTONS */
+    .nav-btn {
+      text-decoration: none; color: #fff; height: 100%; width: 100%;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; transition: all 0.3s ease; padding: 10px 0;
+    }
+    .nav-btn i { font-size: 2.5rem; margin-bottom: 12px; color: #555; transition: 0.3s; }
+    .nav-btn h2 { margin: 0; font-size: 1.2rem; letter-spacing: 4px; font-family: 'Share Tech Mono', monospace; }
+    .nav-btn p { font-size: 0.65rem; color: #666; margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+    
+    .w-nav-cv:hover { border-color: #0dcaf0; background: rgba(13, 202, 240, 0.05); }
+    .w-nav-cv:hover i { color: #0dcaf0; transform: scale(1.1); text-shadow: 0 0 15px rgba(13, 202, 240, 0.5); }
+    
+    .w-nav-porto:hover { border-color: #ff4444; background: rgba(255, 68, 68, 0.05); }
+    .w-nav-porto:hover i { color: #ff4444; transform: scale(1.1); text-shadow: 0 0 15px rgba(255, 68, 68, 0.5); }
+
+    /* ANIMATIONS */
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.5); } 70% { box-shadow: 0 0 0 8px rgba(0, 255, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes cpu-load { 0% { width: 30%; } 20% { width: 85%; } 50% { width: 45%; } 80% { width: 95%; } 100% { width: 50%; } }
+
+    /* RESPONSIVE MOBILE */
+    @media (max-width: 1000px) {
+      .dashboard-container { grid-template-columns: 1fr 1fr; }
+      .w-brand { grid-column: span 2; }
+      .w-status, .w-uplink, .w-services, .w-vitals { grid-column: span 1; }
+      .w-terminal, .w-nav-cv, .w-nav-porto { grid-column: span 2; }
+      .brand-content { flex-direction: column; text-align: center; gap: 15px; }
+      .brand-logo { width: 90px; }
+      .brand-text-box h1 { font-size: 2.5rem; letter-spacing: 2px; }
+      .brand-text-box p { font-size: 0.6rem; letter-spacing: 2px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="gateway-container">
+  <div class="crt-overlay"></div>
+
+  <div class="dashboard-container">
     
-    <div class="brand-container">
-      <img src="assets/images/logopma.png" alt="PMA" class="gateway-logo">
-      
-      <div class="text-group">
-        <h1 class="brand-text" id="cyber-brand">PMA MEDIA</h1>
-        <div class="brand-subtext">PRECISION <span>•</span> MAINTENANCE <span>•</span> AUTHENTIC</div>
+    <!-- 1. BRAND WIDGET -->
+    <div class="widget w-brand">
+      <div class="brand-content">
+        <img src="assets/images/logopma.png" alt="PMA Logo" class="brand-logo">
+        <div class="brand-text-box">
+          <h1 class="decrypt-text" data-target="PMA MEDIA">PMA MEDIA</h1>
+          <p class="decrypt-text" data-target="PRECISION • MAINTENANCE •&#10;AUTHENTIC">PRECISION • MAINTENANCE •<br>AUTHENTIC</p>
+        </div>
       </div>
     </div>
 
-    <div class="button-container">
-      <a href="profile.html" class="gate-btn">
-        <i class="fa-solid fa-fingerprint"></i>
-        <span class="title">I.T DOSSIER</span>
-      </a>
+    <!-- 2. STATUS WIDGET -->
+    <div class="widget w-status">
+      <div class="widget-title"><div class="dot"></div> NETWORK SECURE</div>
+      <div>
+        <div class="clock" id="live-clock">00:00:00</div>
+        <div class="location">Proxy: Sleman-01_ID</div>
+      </div>
+    </div>
 
-      <a href="portfolio.html" class="gate-btn">
-        <i class="fa-solid fa-skull"></i>
-        <span class="title">TUGELANBOTO</span>
+    <!-- 3. UPLINK WIDGET -->
+    <div class="widget w-uplink">
+      <div class="widget-title"><i class="fa-solid fa-satellite-dish"></i> COMMS UPLINK</div>
+      <a href="https://wa.me/6287888780999" target="_blank" class="uplink-btn">
+        <i class="fa-brands fa-whatsapp"></i> ENCRYPTED CHAT
       </a>
     </div>
-    
+
+    <!-- 4. SERVICES WIDGET -->
+    <div class="widget w-services">
+      <div class="widget-title"><i class="fa-solid fa-shield-halved"></i> PROTOCOLS</div>
+      <div class="service-tags">
+        <span class="tag">Pen-Testing</span>
+        <span class="tag">Cryptography</span>
+        <span class="tag">Network Defense</span>
+      </div>
+    </div>
+
+    <!-- 5. VITALS WIDGET -->
+    <div class="widget w-vitals">
+      <div class="widget-title"><i class="fa-solid fa-server"></i> SYS VITALS</div>
+      <div class="vital-row">
+        <div class="vital-label"><span>CPU LOAD</span> <span>ACTIVE</span></div>
+        <div class="vital-bar"><div class="vital-fill cpu-fill"></div></div>
+      </div>
+      <div class="vital-row">
+        <div class="vital-label"><span>MEMORY</span> <span>68%</span></div>
+        <div class="vital-bar"><div class="vital-fill ram-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- 6. TERMINAL CHATBOT WIDGET -->
+    <div class="widget w-terminal" id="terminal-box">
+      <div class="widget-title" style="margin-bottom: 5px;"><i class="fa-solid fa-terminal"></i> pma_core_exploit.sh</div>
+      <div class="terminal-container" id="terminal-content"></div>
+    </div>
+
+    <!-- 7. DOSSIER BUTTON WIDGET -->
+    <div class="widget w-nav-cv">
+      <a href="profile.html" class="nav-btn">
+        <i class="fa-solid fa-fingerprint"></i>
+        <h2 class="decrypt-text" data-target="I.T DOSSIER">I.T DOSSIER</h2>
+        <p>Cybersecurity Profile & Tech Resume</p>
+      </a>
+    </div>
+
+    <!-- 8. PORTFOLIO BUTTON WIDGET -->
+    <div class="widget w-nav-porto">
+      <a href="portfolio.html" class="nav-btn">
+        <i class="fa-solid fa-skull"></i>
+        <h2 class="decrypt-text" data-target="TUGELANBOTO 19">TUGELANBOTO 19</h2>
+        <p>Explicit Visual Hazard & Subsystems</p>
+      </a>
+    </div>
+
   </div>
 
   <script>
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const el = document.getElementById("cyber-brand");
-    const original = "PMA MEDIA";
+    // --- LIVE CLOCK ---
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+      document.getElementById('live-clock').textContent = timeString;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-    function solve() {
-      let iteration = 0;
-      const interval = setInterval(() => {
-        el.innerText = original.split("").map((letter, index) => {
-          if (index < iteration) return original[index];
-          if (letter === " ") return " ";
-          return chars[Math.floor(Math.random() * 36)];
-        }).join("");
+    // --- EFEK DATA DECRYPTION HOVER ---
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
+    const decryptElements = document.querySelectorAll('.decrypt-text');
 
-        if (iteration >= original.length) clearInterval(interval);
-        iteration += 1 / 10; // Kecepatan lambat agar elegan
-      }, 50);
+    decryptElements.forEach(element => {
+      element.addEventListener('mouseenter', event => {
+        let iteration = 0;
+        const targetText = event.target.dataset.target;
+        
+        clearInterval(element.interval);
+        
+        element.interval = setInterval(() => {
+          event.target.innerText = targetText
+            .split("")
+            .map((letter, index) => {
+              if(index < iteration) { return targetText[index]; }
+              if(letter === " " || letter === "•" || letter === "\n") { return letter; }
+              return letters[Math.floor(Math.random() * letters.length)];
+            })
+            .join("");
+          
+          if(iteration >= targetText.length){ clearInterval(element.interval); }
+          iteration += 1 / 3;
+        }, 30);
+      });
+    });
+
+    // --- AI CHATBOT TERMINAL SCRIPT ---
+    const seq1 = [
+      { text: "root@pma-media:~$ ./cyber_defense_grid.sh --engage", style: "cmd-text", speed: 15, delay: 500 },
+      { text: "CRITICAL: Inbound DDoS attack detected on port 443.", style: "warn-text", speed: 20, delay: 600 },
+      { text: "Traffic volume: 450 Gbps. Source signatures: Unknown.", style: "txt-text", speed: 10, delay: 400 },
+      { text: "Deploying Elastic Blackhole Routing...", style: "cmd-text", speed: 15, delay: 800 },
+      { text: "Filtering malicious packets... [||||||||..........] 45%", style: "txt-text", speed: 10, delay: 600 },
+      { text: "Filtering malicious packets... [||||||||||||||||||] 100%", style: "txt-text", speed: 10, delay: 500 },
+      { text: "Attack mitigated. Initiating trace-back sequence...", style: "cmd-text", speed: 15, delay: 1000 },
+      { text: "Tracing IP hops: Node [RU] -> Node [CN] -> Node [BR]...", style: "txt-text", speed: 15, delay: 800 },
+      { text: "Attacker origin masked. Deploying counter-measures.", style: "sys-text", speed: 20, delay: 800 },
+      { text: "Entity 'PMA MEDIA' Mainframe secured. (Precision • Maintenance • Authentic)", style: "sys-text", speed: 15, delay: 600 },
+      { text: "Scanning local directories for compromised files...", style: "cmd-text", speed: 20, delay: 800 },
+      { text: "WARNING: Highly volatile visual anomaly detected in Sector-7.", style: "warn-text", speed: 25, delay: 800 },
+      { text: "ISOLATING: [TUGELANBOTO_19] Explicit graphic aesthetics.", style: "warn-text", speed: 20, delay: 1000 },
+      { text: "Containment field stable. Select your interface protocol.", style: "txt-text", speed: 15, delay: 0 }
+    ];
+
+    const seq2 = [
+      { text: "root@pma-media:~$ exploit_payload --target=mainframe --zero-day", style: "cmd-text", speed: 20, delay: 800 },
+      { text: "Scanning target for vulnerabilities... CVE-2026-4489 found.", style: "txt-text", speed: 15, delay: 600 },
+      { text: "Compiling payload syntax...", style: "cmd-text", speed: 15, delay: 1000 },
+      { text: "Injecting memory-resident exploit... [|||||||.............] 33%", style: "txt-text", speed: 10, delay: 800 },
+      { text: "Injecting memory-resident exploit... [||||||||||||||......] 75%", style: "txt-text", speed: 10, delay: 800 },
+      { text: "Injecting memory-resident exploit... [||||||||||||||||||||] 100%", style: "txt-text", speed: 10, delay: 500 },
+      { text: "Bypassing RSA-8192 encryption keys... [CRACKED]", style: "sys-text", speed: 15, delay: 600 },
+      { text: "Overriding system privileges...", style: "cmd-text", speed: 15, delay: 800 },
+      { text: "ROOT ACCESS GRANTED: Welcome, ANONYMOUS_ADMIN.", style: "sys-text", speed: 25, delay: 800 },
+      { text: "PMA MEDIA Command Center Activated.", style: "sys-text", speed: 15, delay: 600 },
+      { text: "Executing localized sweep for hidden directories...", style: "cmd-text", speed: 20, delay: 1200 },
+      { text: "ERROR: Unauthorized visual hazard identified.", style: "warn-text", speed: 25, delay: 800 },
+      { text: "Target: [TUGELANBOTO_19] Underground art repository.", style: "warn-text", speed: 20, delay: 600 },
+      { text: "Locking folder permissions. View at your own risk.", style: "warn-text", speed: 15, delay: 600 },
+      { text: "Network uplink secure. Awaiting instructions.", style: "txt-text", speed: 15, delay: 0 }
+    ];
+
+    const seq3 = [
+      { text: "Establishing connection to deep web onion relays...", style: "cmd-text", speed: 20, delay: 600 },
+      { text: "Bouncing signal across 14 international proxy nodes...", style: "txt-text", speed: 15, delay: 800 },
+      { text: "Proxy chain: CH -> NL -> IS -> SE -> ID... [ESTABLISHED]", style: "txt-text", speed: 15, delay: 1200 },
+      { text: "Obfuscating MAC address and packet headers...", style: "cmd-text", speed: 15, delay: 500 },
+      { text: "Digital footprint erased. Connection untraceable.", style: "sys-text", speed: 20, delay: 800 },
+      { text: "Login Request: ANONYMOUS_ADMIN...", style: "cmd-text", speed: 20, delay: 600 },
+      { text: "AUTHENTICATION SUCCESSFUL.", style: "sys-text", speed: 30, delay: 500 },
+      { text: "Loading PMA MEDIA interface (Precision • Maintenance • Authentic).", style: "txt-text", speed: 15, delay: 800 },
+      { text: "Deploying Network Penetration and Cryptography tools... [READY]", style: "txt-text", speed: 15, delay: 600 },
+      { text: "Scanning encrypted partition...", style: "cmd-text", speed: 20, delay: 1200 },
+      { text: "CAUTION: Encrypted partition contains raw visual data.", style: "warn-text", speed: 25, delay: 800 },
+      { text: "Signature matches [TUGELANBOTO_19] visual hazard.", style: "warn-text", speed: 15, delay: 500 },
+      { text: "Quarantine protocol engaged to prevent aesthetic corruption.", style: "warn-text", speed: 20, delay: 600 },
+      { text: "Terminal ready for deployment. Select module.", style: "txt-text", speed: 15, delay: 0 }
+    ];
+
+    const seq4 = [
+      { text: "root@pma-media:~$ start_sniffer --interface wlan0", style: "cmd-text", speed: 15, delay: 600 },
+      { text: "Listening to network traffic... Capturing WPA2 handshakes.", style: "txt-text", speed: 10, delay: 800 },
+      { text: "Target acquired. Extracting SHA-256 password hash...", style: "txt-text", speed: 10, delay: 600 },
+      { text: "Hash captured: 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", style: "sys-text", speed: 5, delay: 800 },
+      { text: "Initiating dictionary brute-force attack... ", style: "cmd-text", speed: 15, delay: 800 },
+      { text: "Testing passwords: [||||||..............] 3.5M attempts.", style: "txt-text", speed: 10, delay: 600 },
+      { text: "Testing passwords: [||||||||||||........] 8.2M attempts.", style: "txt-text", speed: 10, delay: 800 },
+      { text: "Testing passwords: [||||||||||||||||||||] MATCH FOUND.", style: "txt-text", speed: 10, delay: 600 },
+      { text: "Decrypted Key: ************", style: "sys-text", speed: 30, delay: 800 },
+      { text: "Gaining unauthorized entry to PMA MEDIA servers...", style: "cmd-text", speed: 15, delay: 1000 },
+      { text: "System Override successful. Welcome, ANONYMOUS_ADMIN.", style: "sys-text", speed: 20, delay: 600 },
+      { text: "WARNING: Extreme visual graphics detected in subsystem.", style: "warn-text", speed: 25, delay: 600 },
+      { text: "Target: [TUGELANBOTO_19] Distressed visual assets.", style: "warn-text", speed: 20, delay: 500 },
+      { text: "Applying digital vault lock...", style: "cmd-text", speed: 15, delay: 600 },
+      { text: "System stable. Awaiting hacking commands.", style: "txt-text", speed: 15, delay: 0 }
+    ];
+
+    const seq5 = [
+      { text: "root@pma-media:~$ initialize_defense_matrix", style: "cmd-text", speed: 15, delay: 500 },
+      { text: "Activating PMA Cyber Defense Grid...", style: "sys-text", speed: 15, delay: 800 },
+      { text: "Scanning all network layers for active intrusions...", style: "cmd-text", speed: 15, delay: 500 },
+      { text: "[ALERT] Trojan horse detected attempting port 8080 breach.", style: "warn-text", speed: 20, delay: 800 },
+      { text: "Deploying honeypot server to trap inbound connection...", style: "cmd-text", speed: 20, delay: 1200 },
+      { text: "Attacker successfully diverted to isolated sandbox.", style: "txt-text", speed: 10, delay: 600 },
+      { text: "Executing reverse-shell to attacker terminal... [ACCESS SECURED]", style: "txt-text", speed: 10, delay: 800 },
+      { text: "Extracting attacker data and permanently banning IP.", style: "txt-text", speed: 10, delay: 600 },
+      { text: "Perimeter secured. Handing control to ANONYMOUS_ADMIN.", style: "sys-text", speed: 20, delay: 800 },
+      { text: "Running internal sweep on PMA MEDIA core files...", style: "cmd-text", speed: 15, delay: 1200 },
+      { text: "FATAL ERROR: Anomalous art repository discovered.", style: "warn-text", speed: 25, delay: 800 },
+      { text: "Warning: [TUGELANBOTO 19] breaks standard design protocols.", style: "warn-text", speed: 20, delay: 500 },
+      { text: "Bypassing safety locks is not recommended.", style: "warn-text", speed: 20, delay: 600 },
+      { text: "Command Center ready. Choose your exploit vector.", style: "txt-text", speed: 15, delay: 0 }
+    ];
+
+    const allTemplates = [seq1, seq2, seq3, seq4, seq5];
+    const randomIndex = Math.floor(Math.random() * allTemplates.length);
+    const bootSequence = allTemplates[randomIndex];
+
+    const terminalContent = document.getElementById('terminal-content');
+    const terminalBox = document.getElementById('terminal-box');
+    let lineIndex = 0;
+    
+    function createNewLine(styleClass) {
+      const p = document.createElement('p');
+      p.className = `log-line ${styleClass}`;
+      const spanText = document.createElement('span');
+      const spanCursor = document.createElement('span');
+      spanCursor.className = 'cursor';
+      p.appendChild(spanText);
+      p.appendChild(spanCursor);
+      terminalContent.appendChild(p);
+      return { p, spanText, spanCursor };
     }
 
-    window.onload = solve;
-    el.onmouseover = solve;
+    function typeLine() {
+      if (lineIndex >= bootSequence.length) {
+        const lastCursor = terminalContent.querySelector('.cursor');
+        if(lastCursor) lastCursor.style.animation = 'blink 1s step-end infinite';
+        return;
+      }
+      const currentLine = bootSequence[lineIndex];
+      const { p, spanText, spanCursor } = createNewLine(currentLine.style);
+      terminalBox.scrollTop = terminalBox.scrollHeight;
+
+      let charIndex = 0;
+      function typeChar() {
+        if (charIndex < currentLine.text.length) {
+          spanText.innerHTML += currentLine.text.charAt(charIndex);
+          charIndex++;
+          setTimeout(typeChar, currentLine.speed);
+        } else {
+          spanCursor.remove();
+          lineIndex++;
+          setTimeout(typeLine, currentLine.delay);
+        }
+      }
+      typeChar();
+    }
+    
+    setTimeout(typeLine, 1500);
   </script>
 
 </body>
