@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PMA Media - E-Sign & Stamp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script>
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  </script>
+</head>
+<body>
+<div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+  <section id="digital-workspace" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 20px;">
+      <div class="tool-workspace" style="display: block; width: 100%; max-width: 900px; margin: 0 auto;">
+          
+          <a href="index.html" class="launch-btn" style="text-decoration: none; display: inline-block; margin-bottom: 20px; background: #222; color: #fff;">[ ESC ] KEMBALI KE TERMINAL UTAMA</a>
+          
+          <div class="canvas-container" style="border: 1px dashed #555; padding: 20px; background: rgba(0,0,0,0.3);">
+              <h3 style="color: #0f0; margin-bottom: 15px; font-family: 'Share Tech Mono', monospace;">> 1. BUAT TANDA TANGAN</h3>
+              <canvas id="signaturePad" width="500" height="200" style="background: #fff; border-radius: 5px; cursor: crosshair; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);"></canvas>
+              
+              <div class="canvas-controls" style="margin-top: 15px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                  <label style="color: #0f0; font-family: monospace; font-size: 0.9rem; cursor: pointer;">
+                      <input type="checkbox" id="toggleTimestamp" checked> Sertakan Teks Waktu & Hash
+                  </label>
+                  <button class="launch-btn" onclick="clearCanvas()">CLEAR_DATA</button>
+                  <button class="launch-btn" onclick="saveSignature()" style="border-color: #0dcaf0; color: #0dcaf0;">GENERATE_STAMP</button>
+              </div>
+          </div>
+
+          <div id="stamp-preview" style="display:none; text-align: center; margin-top: 20px; padding: 20px; border: 1px dashed #0dcaf0; background: rgba(13, 202, 240, 0.05);">
+              <h3 style="color: #0dcaf0; margin-bottom: 10px;">> 2. STAMP_PREVIEW</h3>
+              <img id="preview-img" src="" style="max-width: 100%; border: 1px dashed #0dcaf0; background: repeating-conic-gradient(#222 0% 25%, #111 0% 50%) 50% / 20px 20px;">
+              <br><br>
+              <a id="download-btn" href="#" download="PMA_Stamp.png" class="launch-btn" style="text-decoration: none; background: #0dcaf0; color: #000;">[ DOWNLOAD PNG ]</a>
+          </div>
+              
+          <div style="margin-top: 20px; background: rgba(0,0,0,0.5); padding: 20px; border: 1px solid #0f0;">
+              <h3 style="color: #0f0; margin-bottom: 15px;">> 3. VISUAL_PDF_INJECTION</h3>
+              <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 15px;">Unggah PDF, sesuaikan ukuran stempel, dan geser ke posisi yang tepat.</p>
+              
+              <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                  <input type="file" id="pdf-upload" accept="application/pdf" style="color: #fff; flex: 1; min-width: 200px; border: 1px solid #333; padding: 10px;" onchange="renderPDFVisual()">
+                  <button class="launch-btn" onclick="clearPDFData()" style="background: #333; border-color: #555; color: #fff; padding: 10px;">[ X ] CLEAR PDF</button>
+              </div>
+              
+              <div id="pdf-controls" style="display: none; flex-direction: column; gap: 15px; margin-bottom: 15px; background: #111; padding: 15px; border: 1px dashed #555;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <button class="launch-btn" onclick="prevPage()" style="padding: 5px 15px;">[ < SEBELUMNYA ]</button>
+                      <span id="page-info" style="color: #0f0; font-family: monospace; font-weight: bold; font-size: 1.1rem;">Hal 1 / 1</span>
+                      <button class="launch-btn" onclick="nextPage()" style="padding: 5px 15px;">[ SELANJUTNYA > ]</button>
+                  </div>
+
+                  <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px; border: 1px solid #333;">
+                      <label style="color: #fff; font-family: monospace; font-weight: bold;">UKURAN TTD: </label>
+                      <input type="range" id="stamp-size" min="50" max="400" value="150" oninput="resizeStamp()" style="width: 70%; cursor: pointer;">
+                  </div>
+              </div>
+              
+              <div style="width: 100%; display: flex; justify-content: center; margin: 20px 0; overflow-x: auto; padding: 10px 0;">
+                  <div id="pdf-visual-workspace" style="position: relative; display: none; border: 1px solid #555; background: #222; box-shadow: 0 0 20px rgba(0,255,0,0.2); flex-shrink: 0;">
+                      <canvas id="pdf-render-canvas" style="display: block; margin: 0; padding: 0;"></canvas>
+                      <img id="draggable-stamp" src="" style="position: absolute; top: 0px; left: 0px; width: 150px; cursor: move; z-index: 100; border: 1px dashed #0f0; box-shadow: 0 0 10px #0f0; background: rgba(0,255,0,0.1); margin: 0; padding: 0; box-sizing: border-box;">
+                  </div>
+              </div>
+
+              <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px;">
+                  <button id="apply-stamp-btn" class="launch-btn" onclick="applyStampToMemory()" style="background: #b8860b; border-color: #ffd700; color: #fff; display: none; flex: 1; min-width: 200px; font-weight: bold; padding: 15px;">[ BAKE ] KUNCI TTD KE HALAMAN</button>
+                  <button id="save-pdf-btn" class="launch-btn" onclick="downloadFinalPDF()" style="background: #8a0303; border-color: #ff0000; color: #fff; display: none; flex: 1; min-width: 200px; font-weight: bold; padding: 15px;">[ EXECUTE ] UNDUH PDF FINAL</button>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <script>
+    // ==========================================
+    // 1. MESIN KANVAS TANDA TANGAN
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", function() {
+        initSignaturePad();
+    });
+
+    let canvas, ctx;
+    let isDrawing = false;
+    let lastX = 0; let lastY = 0;
+
+    function initSignaturePad() {
+        canvas = document.getElementById('signaturePad');
+        if (!canvas) return;
+        ctx = canvas.getContext('2d');
+        ctx.strokeStyle = '#050505'; 
+        ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; const rect = canvas.getBoundingClientRect(); lastX = e.clientX - rect.left; lastY = e.clientY - rect.top; });
+        canvas.addEventListener('mousemove', (e) => { if (!isDrawing) return; const rect = canvas.getBoundingClientRect(); const currentX = e.clientX - rect.left; const currentY = e.clientY - rect.top; ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(currentX, currentY); ctx.stroke(); lastX = currentX; lastY = currentY; });
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseout', () => isDrawing = false);
+
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); const touch = e.touches[0]; const rect = canvas.getBoundingClientRect(); isDrawing = true; lastX = touch.clientX - rect.left; lastY = touch.clientY - rect.top; }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (!isDrawing) return; const touch = e.touches[0]; const rect = canvas.getBoundingClientRect(); const currentX = touch.clientX - rect.left; const currentY = touch.clientY - rect.top; ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(currentX, currentY); ctx.stroke(); lastX = currentX; lastY = currentY; }, { passive: false });
+        canvas.addEventListener('touchend', () => isDrawing = false);
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('stamp-preview').style.display = 'none';
+    }
+
+    function saveSignature() {
+        try {
+            const includeText = document.getElementById('toggleTimestamp').checked;
+            const docHash = "PMA-" + Math.random().toString(36).substr(2, 10).toUpperCase();
+
+            if (includeText) {
+                const now = new Date();
+                const timeStamp = `SIGNED: ${now.toLocaleDateString('id-ID')} - ${now.toLocaleTimeString('id-ID')}`;
+                ctx.font = "11px monospace"; ctx.fillStyle = "#050505";
+                ctx.fillText(timeStamp, 10, canvas.height - 25); 
+                ctx.fillText("HASH: " + docHash, 10, canvas.height - 10); 
+            }
+
+            if (typeof QRious !== 'undefined') {
+                const qrCanvas = document.createElement('canvas');
+                new QRious({ element: qrCanvas, value: 'https://pma.wtf/verify?doc=' + docHash, size: 70, backgroundAlpha: 0, foreground: '#050505' });
+                ctx.drawImage(qrCanvas, canvas.width - 80, canvas.height - 80);
+            }
+
+            const dataURL = canvas.toDataURL('image/png');
+            document.getElementById('preview-img').src = dataURL;
+            const downloadBtn = document.getElementById('download-btn');
+            if(downloadBtn) downloadBtn.href = dataURL; 
+            document.getElementById('stamp-preview').style.display = 'block';
+        } catch (error) { alert("Error memproses stempel: " + error.message); }
+    }
+
+    // ==========================================
+    // 2. MESIN VISUAL & DRAG-DROP PDF 
+    // ==========================================
+    let pdfRawData = null; 
+    let pdfDocInstance = null; 
+    let currentPageNum = 1;    
+    
+    async function renderPDFVisual() {
+        const fileInput = document.getElementById('pdf-upload');
+        if (fileInput.files.length === 0) return;
+
+        const stampPreviewSrc = document.getElementById('preview-img').src;
+        if (!stampPreviewSrc || stampPreviewSrc === window.location.href) {
+            alert("Harap buat Tanda Tangan (GENERATE STAMP) terlebih dahulu sebelum mengunggah PDF!");
+            fileInput.value = ""; 
+            return;
+        }
+
+        const file = fileInput.files[0];
+        pdfRawData = await file.arrayBuffer(); 
+
+        try {
+            const loadingTask = pdfjsLib.getDocument({ data: pdfRawData });
+            pdfDocInstance = await loadingTask.promise;
+            currentPageNum = 1; 
+            
+            document.getElementById('pdf-controls').style.display = 'flex';
+            document.getElementById('apply-stamp-btn').style.display = 'block'; 
+            
+            await renderPage(currentPageNum);
+            
+            const stampEl = document.getElementById('draggable-stamp');
+            stampEl.src = stampPreviewSrc;
+            const workspace = document.getElementById('pdf-visual-workspace');
+            makeElementDraggable(stampEl, workspace);
+
+            resizeStamp();
+
+        } catch (error) {
+            alert("Gagal memuat PDF: " + error.message);
+        }
+    }
+
+    async function renderPage(pageNum) {
+        if (!pdfDocInstance) return;
+        document.getElementById('page-info').textContent = `Hal ${pageNum} / ${pdfDocInstance.numPages}`;
+        
+        const page = await pdfDocInstance.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1.0 });
+        
+        const containerWidth = document.getElementById('digital-workspace').offsetWidth - 60;
+        let scale = containerWidth / viewport.width;
+        if (scale > 1.5) scale = 1.5; 
+        
+        const scaledViewport = page.getViewport({ scale: scale });
+        const pdfCanvas = document.getElementById('pdf-render-canvas');
+        const context = pdfCanvas.getContext('2d');
+        pdfCanvas.height = scaledViewport.height;
+        pdfCanvas.width = scaledViewport.width;
+
+        await page.render({ canvasContext: context, viewport: scaledViewport }).promise;
+
+        const workspace = document.getElementById('pdf-visual-workspace');
+        workspace.style.display = 'block';
+        workspace.style.width = pdfCanvas.width + 'px';
+        workspace.style.height = pdfCanvas.height + 'px';
+    }
+
+    function prevPage() { if (currentPageNum > 1) { currentPageNum--; renderPage(currentPageNum); } }
+    function nextPage() { if (currentPageNum < pdfDocInstance.numPages) { currentPageNum++; renderPage(currentPageNum); } }
+
+    function resizeStamp() {
+        const stampEl = document.getElementById('draggable-stamp');
+        const newSize = document.getElementById('stamp-size').value;
+        stampEl.style.width = newSize + 'px';
+    }
+
+    function makeElementDraggable(elmnt, container) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        elmnt.onmousedown = dragMouseDown;
+        elmnt.ontouchstart = dragTouchStart;
+
+        function dragMouseDown(e) { e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; }
+        function dragTouchStart(e) { pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; document.ontouchend = closeDragElement; document.ontouchmove = elementTouchDrag; }
+
+        function elementDrag(e) { e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; applyBoundaries(); }
+        function elementTouchDrag(e) { e.preventDefault(); pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; applyBoundaries(); }
+
+        function applyBoundaries() {
+            let newTop = elmnt.offsetTop - pos2;
+            let newLeft = elmnt.offsetLeft - pos1;
+            if (newTop < 0) newTop = 0; if (newLeft < 0) newLeft = 0;
+            if (newTop + elmnt.offsetHeight > container.offsetHeight) newTop = container.offsetHeight - elmnt.offsetHeight;
+            if (newLeft + elmnt.offsetWidth > container.offsetWidth) newLeft = container.offsetWidth - elmnt.offsetWidth;
+            elmnt.style.top = newTop + "px"; elmnt.style.left = newLeft + "px";
+        }
+        function closeDragElement() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
+    }
+
+    // ==========================================
+    // 3. MESIN IN-MEMORY PDF (MULTI-SIGNATURE)
+    // ==========================================
+    let currentPdfBytes = null; 
+
+    async function applyStampToMemory() {
+        if (!pdfRawData) return;
+        try {
+            const sourceBytes = currentPdfBytes ? currentPdfBytes : pdfRawData;
+            const pdfDoc = await PDFLib.PDFDocument.load(sourceBytes);
+            
+            const pages = pdfDoc.getPages();
+            const targetPage = pages[currentPageNum - 1]; 
+
+            const stampDataUrl = document.getElementById('preview-img').src;
+            const stampImage = await pdfDoc.embedPng(stampDataUrl);
+
+            const workspace = document.getElementById('pdf-visual-workspace');
+            const stampEl = document.getElementById('draggable-stamp');
+
+            // Kalkulasi Vektor Absolut (Mencegah Stempel Meloncat)
+            const stampTop = parseFloat(stampEl.style.top) || 0;
+            const stampLeft = parseFloat(stampEl.style.left) || 0;
+            
+            const ratioX = stampLeft / workspace.clientWidth;
+            const ratioY = stampTop / workspace.clientHeight;
+            const ratioWidth = stampEl.offsetWidth / workspace.clientWidth;
+
+            const pdfWidth = targetPage.getWidth();
+            const pdfHeight = targetPage.getHeight();
+            
+            const actualStampWidth = pdfWidth * ratioWidth;
+            const stampScale = actualStampWidth / stampImage.width;
+            const actualStampHeight = stampImage.height * stampScale;
+
+            const xPos = pdfWidth * ratioX;
+            const yPos = pdfHeight - (pdfHeight * ratioY) - actualStampHeight;
+
+            targetPage.drawImage(stampImage, { x: xPos, y: yPos, width: actualStampWidth, height: actualStampHeight });
+
+            currentPdfBytes = await pdfDoc.save();
+            
+            alert(`Stempel berhasil dikunci pada Halaman ${currentPageNum}! Anda bisa pindah halaman untuk menambah stempel lagi, atau klik UNDUH PDF FINAL.`);
+            
+            pdfRawData = currentPdfBytes; 
+            const loadingTask = pdfjsLib.getDocument({ data: pdfRawData });
+            pdfDocInstance = await loadingTask.promise;
+            renderPage(currentPageNum);
+            
+            // Reset posisi stempel ke atas
+            stampEl.style.top = "0px";
+            stampEl.style.left = "0px";
+
+            document.getElementById('save-pdf-btn').style.display = 'block';
+
+        } catch (error) { 
+            alert("Error saat mengunci stempel: " + error.message); 
+        }
+    }
+
+    function downloadFinalPDF() {
+        if (!currentPdfBytes) {
+            alert("Anda belum mengunci stempel apa pun ke dalam dokumen!");
+            return;
+        }
+        
+        const blob = new Blob([currentPdfBytes], { type: 'application/pdf' });
+        const downloadUrl = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = "PMA_SIGNED_DOC.pdf";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        URL.revokeObjectURL(downloadUrl);
+        alert("PROSES SELESAI! Dokumen PDF final berhasil diunduh.");
+    }
+
+    function clearPDFData() {
+        pdfRawData = null;
+        currentPdfBytes = null;
+        pdfDocInstance = null;
+        currentPageNum = 1;
+
+        document.getElementById('pdf-upload').value = ""; 
+        document.getElementById('pdf-visual-workspace').style.display = 'none'; 
+        document.getElementById('pdf-controls').style.display = 'none'; 
+        document.getElementById('apply-stamp-btn').style.display = 'none'; 
+        document.getElementById('save-pdf-btn').style.display = 'none'; 
+        
+        const pdfCanvas = document.getElementById('pdf-render-canvas');
+        if (pdfCanvas) {
+            const context = pdfCanvas.getContext('2d');
+            context.clearRect(0, 0, pdfCanvas.width, pdfCanvas.height);
+        }
+        
+        alert("Ruang kerja PDF dibersihkan. Stempel TTD tetap aman. Silakan unggah dokumen PDF berikutnya.");
+    }
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        
+        // Styling Toast (Cyber Style)
+        toast.style.padding = "15px 20px";
+        toast.style.background = type === 'error' ? 'rgba(255, 0, 0, 0.9)' : 'rgba(0, 255, 0, 0.9)';
+        toast.style.color = "#000";
+        toast.style.fontFamily = "'JetBrains Mono', monospace";
+        toast.style.fontWeight = "bold";
+        toast.style.borderRadius = "4px";
+        toast.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
+        toast.textContent = `> ${message}`;
+        
+        container.appendChild(toast);
+        
+        // Hilangkan otomatis setelah 3 detik
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            toast.style.transition = "opacity 0.5s";
+            setTimeout(() => toast.remove(), 500);
+        }, 3000);
+    }
+  </script>
+</body>
+</html>
