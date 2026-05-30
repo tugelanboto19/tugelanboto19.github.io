@@ -6,9 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="PMA Media - Precision Maintenance Authentic. Cyber Security & Visual Hazard Gallery.">
   
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#050505">
+  <link rel="apple-touch-icon" href="assets/images/logopma.png">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Menambahkan Share Tech Mono untuk font utama (Hacker Style) -->
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Montserrat:wght@200;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="assets/css/style.css">
@@ -17,24 +20,24 @@
   <style>
     /* ROOT & RESET */
     body, html {
-    margin: 0; padding: 0; min-height: 100vh;
-    background-color: #030303 !important;
-    color: #fff;
-    font-family: 'Montserrat', sans-serif;
-    background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 30px 30px;
-    
-    display: flex; 
-    flex-direction: column; /* TAMBAHKAN INI: Paksa susunan atas-bawah */
-    justify-content: flex-start; /* UBAH INI: Mulai dari atas layar, bukan tengah */
-    align-items: center;
-    
-    box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
-}
+        margin: 0; padding: 0; min-height: 100vh;
+        background-color: #030303 !important;
+        color: #fff;
+        font-family: 'Montserrat', sans-serif;
+        background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
+        
+        display: flex; 
+        flex-direction: column; 
+        justify-content: flex-start; 
+        align-items: center;
+        
+        box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+    }
 
-    /* 1. EFEK CRT MONITOR SCANLINES */
+    /* 1. CRT MONITOR SCANLINES EFFECT */
     .crt-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
@@ -90,7 +93,6 @@
       cursor: crosshair;
     }
     
-    /* Efek Glitch RGB pada Logo Gambar saat Hover */
     .brand-logo:hover { animation: logo-glitch 0.2s infinite; }
     @keyframes logo-glitch {
       0%, 100% { transform: translate(0); filter: grayscale(1) brightness(1.5); }
@@ -102,9 +104,8 @@
 
     .brand-text-box { display: flex; flex-direction: column; }
     
-    /* Teks PMA MEDIA diubah jadi font Hacker/Cyber */
     .brand-text-box h1 {
-      font-family: 'Share Tech Mono', monospace; /* Font Hacking */
+      font-family: 'Share Tech Mono', monospace; 
       font-size: 3.8rem; font-weight: 400;
       margin: 0 0 5px 0; letter-spacing: 4px;
       color: #fff;
@@ -112,10 +113,9 @@
       cursor: crosshair;
     }
     
-    /* Teks Kepanjangan diubah jadi font Terminal Matrix */
     .brand-text-box p { 
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem; letter-spacing: 4px; color: #0f0; /* Hijau terminal */
+      font-size: 0.75rem; letter-spacing: 4px; color: #0f0; 
       margin: 0; font-weight: 700; line-height: 1.8;
       white-space: pre-wrap; 
       cursor: crosshair;
@@ -181,7 +181,7 @@
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     @keyframes cpu-load { 0% { width: 30%; } 20% { width: 85%; } 50% { width: 45%; } 80% { width: 95%; } 100% { width: 50%; } }
 
-    /* RESPONSIVE TABLET (Layar Menengah) */
+    /* RESPONSIVE TABLET */
     @media (max-width: 1000px) {
       .dashboard-container { grid-template-columns: 1fr 1fr; }
       .w-brand { grid-column: span 2; }
@@ -193,42 +193,39 @@
       .brand-text-box p { font-size: 0.6rem; letter-spacing: 2px; }
     }
 
-    /* RESPONSIVE SMARTPHONE (Layar HP) */
+    /* RESPONSIVE SMARTPHONE */
     @media (max-width: 600px) {
       .dashboard-container { 
-        grid-template-columns: 1fr; /* Paksa tata letak jadi 1 kolom penuh */
+        grid-template-columns: 1fr; 
         padding: 20px 0;
       }
       .w-brand, .w-status, .w-uplink, .w-services, .w-vitals, .w-terminal, .w-nav-cv, .w-nav-porto { 
-        grid-column: span 1 !important; /* Paksa semua widget berbaris ke bawah */
+        grid-column: span 1 !important; 
         grid-row: span 1 !important;
       }
       .workspace-header h1 {
-        font-size: 1.8rem; /* Kecilkan judul utama */
+        font-size: 1.8rem; 
       }
       .brand-text-box h1 {
-        font-size: 1.8rem !important; /* Kecilkan teks PMA MEDIA agar tidak keluar layar */
+        font-size: 1.8rem !important; 
       }
       .w-terminal {
-        height: 300px; /* Beri ruang lebih tinggi untuk terminal hacker di HP */
+        height: 300px; 
       }
       .grid-showcase {
-        grid-template-columns: 1fr; /* Alat utilities sejajar 1 kolom */
+        grid-template-columns: 1fr; 
       }
     }
   </style>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#050505">
-  <link rel="apple-touch-icon" href="assets/images/logopma.png">
 </head>
 <body>
 <section id="digital-workspace">
     <div class="workspace-header">
         <h1>PMA Media <span>Utilities</span></h1>
-        <p>Kumpulan alat komputasi berbasis klien. 100% aman, diproses secara lokal di peramban Anda.</p>
+        <p>Client-side computing tools. 100% secure, processed locally in your browser.</p>
         
         <button id="pma-install-btn" class="launch-btn" style="display: none; background: #b8860b; border-color: #ffd700; color: #fff; margin-top: 15px; font-size: 1.2rem; padding: 10px 30px;">
-            <i class="fa-solid fa-download"></i> INSTAL APLIKASI (OFFLINE MODE)
+            <i class="fa-solid fa-download"></i> INSTALL APP (OFFLINE MODE)
         </button>
     </div>
 
@@ -237,35 +234,31 @@
         <div class="tool-card active-tool" id="card-esign">
             <div class="card-icon">🖋️</div>
             <h3>In-Browser E-Sign & Stamp</h3>
-            <p>Suntikkan stempel visual dan tanda tangan kriptografis ke dokumen PDF secara presisi tanpa mengunggah data rahasia ke server.</p>
-            <a href="esign.html" class="launch-btn" style="text-decoration: none; display: inline-block; text-align: center;">Buka Alat</a>
+            <p>Inject visual stamps and cryptographic signatures into PDF documents precisely. Zero server uploads, maximum privacy.</p>
+            <a href="esign.html" class="launch-btn" style="text-decoration: none; display: inline-block; text-align: center;">[ LAUNCH ]</a>
         </div>
 
         <div class="tool-card" id="card-halftone">
             <div class="card-icon">🖨️</div>
             <h3>Halftone & Dithering Processor</h3>
-            <p>Konversi gambar gradasi menjadi format titik siap cetak (1-bit) untuk kebutuhan sablon atau desain aset visual.</p>
-            <a href="halftone.html" class="launch-btn" style="text-decoration: none; display: inline-block; text-align: center;">Buka Alat</a>
+            <p>Convert gradient images into print-ready (1-bit) raster formats. Essential for screen printing and retro visual design.</p>
+            <a href="halftone.html" class="launch-btn" style="text-decoration: none; display: inline-block; text-align: center;">[ LAUNCH ]</a>
         </div>
 
         <div class="tool-card" id="card-network">
             <div class="card-icon">🌐</div>
-            <h3>DNS & IP Diagnostics</h3>
-            <p>Analisis resolusi DNS, pantau rute IP, dan periksa kesehatan web menggunakan protokol DoH secara real-time.</p>
-            <a href="network.html" class="launch-btn" style="text-decoration: none; display: inline-block; text-align: center;">Buka Alat</a>
+            <h3>Advanced Network OSINT</h3>
+            <p>Execute OSINT DNS resolution, extract IP topology, and monitor network health via DoH protocols in real-time.</p>
+            <a href="network.html" class="launch-btn" style="text-decoration: none; display: inline-block; text-align: center;">[ LAUNCH ]</a>
         </div>
     </div>
 
-    </div>
 </section>
 
-<section id="legacy-content">
-    </section>
   <div class="crt-overlay"></div>
 
   <div class="dashboard-container">
     
-    <!-- 1. BRAND WIDGET -->
     <div class="widget w-brand">
       <div class="brand-content">
         <img src="assets/images/logopma.png" alt="PMA Logo" class="brand-logo">
@@ -276,16 +269,14 @@
       </div>
     </div>
 
-    <!-- 2. STATUS WIDGET -->
     <div class="widget w-status">
       <div class="widget-title"><div class="dot"></div> NETWORK SECURE</div>
       <div>
         <div class="clock" id="live-clock">00:00:00</div>
-        <div class="location">Proxy: Sleman-01_ID</div>
+        <div class="location">Node: Sleman-01_ID</div>
       </div>
     </div>
 
-    <!-- 3. UPLINK WIDGET -->
     <div class="widget w-uplink">
       <div class="widget-title"><i class="fa-solid fa-satellite-dish"></i> COMMS UPLINK</div>
       <a href="https://wa.me/6287888780999" target="_blank" class="uplink-btn">
@@ -293,7 +284,6 @@
       </a>
     </div>
 
-    <!-- 4. SERVICES WIDGET -->
     <div class="widget w-services">
       <div class="widget-title"><i class="fa-solid fa-shield-halved"></i> PROTOCOLS</div>
       <div class="service-tags">
@@ -303,7 +293,6 @@
       </div>
     </div>
 
-    <!-- 5. VITALS WIDGET -->
     <div class="widget w-vitals">
       <div class="widget-title"><i class="fa-solid fa-server"></i> SYS VITALS</div>
       <div class="vital-row">
@@ -316,13 +305,11 @@
       </div>
     </div>
 
-    <!-- 6. TERMINAL CHATBOT WIDGET -->
     <div class="widget w-terminal" id="terminal-box">
       <div class="widget-title" style="margin-bottom: 5px;"><i class="fa-solid fa-terminal"></i> pma_core_exploit.sh</div>
       <div class="terminal-container" id="terminal-content"></div>
     </div>
 
-    <!-- 7. DOSSIER BUTTON WIDGET -->
     <div class="widget w-nav-cv">
       <a href="profile.html" class="nav-btn">
         <i class="fa-solid fa-fingerprint"></i>
@@ -331,7 +318,6 @@
       </a>
     </div>
 
-    <!-- 8. PORTFOLIO BUTTON WIDGET -->
     <div class="widget w-nav-porto">
       <a href="portfolio.html" class="nav-btn">
         <i class="fa-solid fa-skull"></i>
@@ -343,122 +329,6 @@
   </div>
 
   <script>
-    // ==========================================
-// MODUL: E-SIGN & DIGITAL STAMP KERNEL
-// ==========================================
-
-// 1. Logika Transisi Antarmuka (Navigasi SPA)
-function openTool(toolName) {
-    if (toolName === 'esign') {
-        document.querySelector('.grid-showcase').style.display = 'none';
-        document.getElementById('esign-workspace-ui').style.display = 'block';
-        initSignaturePad(); // Jalankan mesin kanvas saat dibuka
-    }
-}
-
-function closeTool() {
-    document.getElementById('esign-workspace-ui').style.display = 'none';
-    document.querySelector('.grid-showcase').style.display = 'grid';
-}
-
-// 2. Mesin Perekam Koordinat (Canvas Matrix)
-let canvas, ctx;
-let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
-
-function initSignaturePad() {
-    canvas = document.getElementById('signaturePad');
-    ctx = canvas.getContext('2d');
-    
-    // Setel gaya pena (Tinta tebal, warna gelap)
-    ctx.strokeStyle = '#050505'; // Warna tinta hitam pekat
-    ctx.lineWidth = 3;           // Ketebalan pena
-    ctx.lineJoin = 'round';      // Sudut garis membulat
-    ctx.lineCap = 'round';       // Ujung pena membulat
-
-    // Event Listener untuk Mouse (Komputer)
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', stopDrawing);
-
-    // Event Listener untuk Sentuhan (Smartphone/Tablet)
-    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-    canvas.addEventListener('touchend', stopDrawing);
-}
-
-// 3. Logika Kalkulasi Vektor (Menggambar Garis)
-function startDrawing(e) {
-    isDrawing = true;
-    // Dapatkan koordinat presisi dari posisi kursor di layar
-    [lastX, lastY] = [e.offsetX, e.offsetY];
-}
-
-function draw(e) {
-    if (!isDrawing) return; // Jika tidak diklik, jangan gambar
-    
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);       // Mulai dari titik terakhir
-    ctx.lineTo(e.offsetX, e.offsetY); // Tarik ke titik kursor saat ini
-    ctx.stroke();                   // Eksekusi tinta
-
-    // Perbarui titik terakhir
-    [lastX, lastY] = [e.offsetX, e.offsetY];
-}
-
-function stopDrawing() {
-    isDrawing = false;
-}
-
-// Dukungan Translasi Koordinat untuk Layar Sentuh (HP)
-function handleTouchStart(e) {
-    e.preventDefault(); // Cegah scrolling
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    isDrawing = true;
-    lastX = touch.clientX - rect.left;
-    lastY = touch.clientY - rect.top;
-}
-
-function handleTouchMove(e) {
-    e.preventDefault();
-    if (!isDrawing) return;
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const currentX = touch.clientX - rect.left;
-    const currentY = touch.clientY - rect.top;
-
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(currentX, currentY);
-    ctx.stroke();
-
-    lastX = currentX;
-    lastY = currentY;
-}
-
-// 4. Utilitas Eksekusi
-function clearCanvas() {
-    // Menghapus seluruh matriks memori di dalam kanvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    document.getElementById('stamp-preview').style.display = 'none';
-}
-
-function saveSignature() {
-    // Ekstrak data biner dari kanvas menjadi format Base64 PNG
-    const dataURL = canvas.toDataURL('image/png');
-    
-    // Tampilkan pratinjau stempel transparan
-    const previewDiv = document.getElementById('stamp-preview');
-    const previewImg = document.getElementById('preview-img');
-    
-    previewImg.src = dataURL;
-    previewDiv.style.display = 'block';
-    
-    // (Fase Selanjutnya: Menyuntikkan Base64 ini ke dalam dokumen PDF)
-}
     // --- LIVE CLOCK ---
     function updateClock() {
       const now = new Date();
@@ -468,7 +338,7 @@ function saveSignature() {
     setInterval(updateClock, 1000);
     updateClock();
 
-    // --- EFEK DATA DECRYPTION HOVER ---
+    // --- DATA DECRYPTION HOVER EFFECT ---
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
     const decryptElements = document.querySelectorAll('.decrypt-text');
 
@@ -629,56 +499,41 @@ function saveSignature() {
     }
     
     setTimeout(typeLine, 1500);
-    // Registrasi Service Worker PWA
+
+    // ==========================================
+    // PWA INSTALLATION SYSTEM (CUSTOM BUTTON)
+    // ==========================================
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => {
-            console.log('PMA_UPLINK: ServiceWorker aktif.', registration.scope);
-          })
-          .catch(err => {
-            console.log('PMA_ERROR: Gagal memuat ServiceWorker.', err);
-          });
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Error:', err));
       });
     }
-    // ==========================================
-    // SISTEM INSTALASI PWA (CUSTOM BUTTON)
-    // ==========================================
+
     let deferredPrompt;
     const installBtn = document.getElementById('pma-install-btn');
 
-    // 1. Mencegat peringatan instalasi bawaan peramban
     window.addEventListener('beforeinstallprompt', (e) => {
-        // Mencegah Chrome memunculkan pop-up bawaan dari bawah
         e.preventDefault();
-        // Simpan event tersebut ke dalam variabel untuk dipicu nanti
         deferredPrompt = e;
-        // Munculkan tombol emas kita
         installBtn.style.display = 'inline-block';
     });
 
-    // 2. Apa yang terjadi saat tombol emas ditekan?
     installBtn.addEventListener('click', async () => {
         if (deferredPrompt) {
-            // Tampilkan layar instalasi native dari sistem HP/OS
             deferredPrompt.prompt();
-            // Tunggu respons pengguna (apakah mereka menekan "Install" atau "Cancel")
             const { outcome } = await deferredPrompt.userChoice;
             if (outcome === 'accepted') {
-                console.log('Pengguna menginstal PMA Media');
-                installBtn.style.display = 'none'; // Sembunyikan tombol setelah diinstal
+                console.log('User installed PMA Media');
+                installBtn.style.display = 'none'; 
             }
-            // Kosongkan memori prompt
             deferredPrompt = null;
         }
     });
 
-    // 3. Sembunyikan tombol jika aplikasi sudah terinstal dan dibuka dari Home Screen
     window.addEventListener('appinstalled', () => {
         installBtn.style.display = 'none';
         deferredPrompt = null;
     });
   </script>
-
 </body>
 </html>
