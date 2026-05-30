@@ -226,6 +226,10 @@
     <div class="workspace-header">
         <h1>PMA Media <span>Utilities</span></h1>
         <p>Kumpulan alat komputasi berbasis klien. 100% aman, diproses secara lokal di peramban Anda.</p>
+        
+        <button id="pma-install-btn" class="launch-btn" style="display: none; background: #b8860b; border-color: #ffd700; color: #fff; margin-top: 15px; font-size: 1.2rem; padding: 10px 30px;">
+            <i class="fa-solid fa-download"></i> INSTAL APLIKASI (OFFLINE MODE)
+        </button>
     </div>
 
     <div class="grid-showcase">
@@ -637,6 +641,43 @@ function saveSignature() {
           });
       });
     }
+    // ==========================================
+    // SISTEM INSTALASI PWA (CUSTOM BUTTON)
+    // ==========================================
+    let deferredPrompt;
+    const installBtn = document.getElementById('pma-install-btn');
+
+    // 1. Mencegat peringatan instalasi bawaan peramban
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Mencegah Chrome memunculkan pop-up bawaan dari bawah
+        e.preventDefault();
+        // Simpan event tersebut ke dalam variabel untuk dipicu nanti
+        deferredPrompt = e;
+        // Munculkan tombol emas kita
+        installBtn.style.display = 'inline-block';
+    });
+
+    // 2. Apa yang terjadi saat tombol emas ditekan?
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            // Tampilkan layar instalasi native dari sistem HP/OS
+            deferredPrompt.prompt();
+            // Tunggu respons pengguna (apakah mereka menekan "Install" atau "Cancel")
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                console.log('Pengguna menginstal PMA Media');
+                installBtn.style.display = 'none'; // Sembunyikan tombol setelah diinstal
+            }
+            // Kosongkan memori prompt
+            deferredPrompt = null;
+        }
+    });
+
+    // 3. Sembunyikan tombol jika aplikasi sudah terinstal dan dibuka dari Home Screen
+    window.addEventListener('appinstalled', () => {
+        installBtn.style.display = 'none';
+        deferredPrompt = null;
+    });
   </script>
 
 </body>
