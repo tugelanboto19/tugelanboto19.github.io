@@ -181,7 +181,7 @@
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     @keyframes cpu-load { 0% { width: 30%; } 20% { width: 85%; } 50% { width: 45%; } 80% { width: 95%; } 100% { width: 50%; } }
 
-    /* RESPONSIVE MOBILE */
+    /* RESPONSIVE TABLET (Layar Menengah) */
     @media (max-width: 1000px) {
       .dashboard-container { grid-template-columns: 1fr 1fr; }
       .w-brand { grid-column: span 2; }
@@ -191,6 +191,30 @@
       .brand-logo { width: 90px; }
       .brand-text-box h1 { font-size: 2.5rem; letter-spacing: 2px; }
       .brand-text-box p { font-size: 0.6rem; letter-spacing: 2px; }
+    }
+
+    /* RESPONSIVE SMARTPHONE (Layar HP) */
+    @media (max-width: 600px) {
+      .dashboard-container { 
+        grid-template-columns: 1fr; /* Paksa tata letak jadi 1 kolom penuh */
+        padding: 20px 0;
+      }
+      .w-brand, .w-status, .w-uplink, .w-services, .w-vitals, .w-terminal, .w-nav-cv, .w-nav-porto { 
+        grid-column: span 1 !important; /* Paksa semua widget berbaris ke bawah */
+        grid-row: span 1 !important;
+      }
+      .workspace-header h1 {
+        font-size: 1.8rem; /* Kecilkan judul utama */
+      }
+      .brand-text-box h1 {
+        font-size: 1.8rem !important; /* Kecilkan teks PMA MEDIA agar tidak keluar layar */
+      }
+      .w-terminal {
+        height: 300px; /* Beri ruang lebih tinggi untuk terminal hacker di HP */
+      }
+      .grid-showcase {
+        grid-template-columns: 1fr; /* Alat utilities sejajar 1 kolom */
+      }
     }
   </style>
 </head>
