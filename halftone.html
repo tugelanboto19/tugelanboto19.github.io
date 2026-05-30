@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PMA Media - Halftone Processor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;"></div>
+
+  <section id="digital-workspace" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 20px;">
+      <div class="tool-workspace" style="display: block; width: 100%; max-width: 900px; margin: 0 auto;">
+          
+          <a href="index.html" class="launch-btn" style="text-decoration: none; display: inline-block; margin-bottom: 20px; background: #222; color: #fff;">[ ESC ] KEMBALI KE TERMINAL UTAMA</a>
+          
+          <div style="background: rgba(0,0,0,0.5); padding: 20px; border: 1px solid #0f0; margin-bottom: 20px;">
+              <h3 style="color: #0f0; margin-bottom: 15px; font-family: 'Share Tech Mono', monospace;">> HALFTONE_PROCESSOR_v1.0</h3>
+              <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 15px;">Unggah aset visual, atur parameter matriks, lalu eksekusi konversi raster 1-bit.</p>
+              
+             <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
+                  <input type="file" id="image-upload" accept="image/png, image/jpeg" style="color: #fff; flex: 1; min-width: 200px; border: 1px solid #333; padding: 10px; background: #000;" onchange="loadImage()">
+                  <button class="launch-btn" onclick="clearHalftoneData()" style="background: #333; border-color: #555; color: #fff; padding: 10px;">[ X ] CLEAR DATA</button>
+              </div>
+              <div id="halftone-controls" style="display: none; flex-direction: column; gap: 15px; background: #111; padding: 15px; border: 1px dashed #555;">
+                  
+                  <div style="display: flex; align-items: center; justify-content: space-between;">
+                      <label style="color: #fff; font-family: monospace; font-size: 0.9rem;">UKURAN TITIK (DOT SIZE): <span id="val-dotsize" style="color:#0f0;">4</span>px</label>
+                      <input type="range" id="param-dotsize" min="2" max="20" value="4" oninput="updateVal('dotsize')" onchange="executeHalftone()" style="width: 50%; cursor: pointer;">
+                  </div>
+
+                  <div style="display: flex; align-items: center; justify-content: space-between;">
+                      <label style="color: #fff; font-family: monospace; font-size: 0.9rem;">MULTIPLIER KONTRAS: <span id="val-contrast" style="color:#0dcaf0;">1.0</span>x</label>
+                      <input type="range" id="param-contrast" min="0.5" max="3" step="0.1" value="1.0" oninput="updateVal('contrast')" onchange="executeHalftone()" style="width: 50%; cursor: pointer;">
+                  </div>
+
+                  <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                      <input type="checkbox" id="param-invert" onchange="executeHalftone()" style="width: 15px; height: 15px; cursor: pointer;">
+                      <label style="color: #ff4444; font-family: monospace; font-weight: bold; font-size: 0.9rem;">[ INVERT ] Cetak Sablon Tinta Putih (Kaos Hitam)</label>
+                  </div>
+
+              </div>
+          </div>
+
+          <div id="render-area" style="display: none; text-align: center;">
+              <div style="width: 100%; display: flex; justify-content: center; margin-bottom: 20px; overflow-x: auto; background: #222; border: 1px dashed #0dcaf0; padding: 10px;">
+                  <canvas id="source-canvas" style="display: none;"></canvas>
+                  <canvas id="halftone-canvas" style="max-width: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.8); background: #fff;"></canvas>
+              </div>
+
+              <button id="download-btn" class="launch-btn" onclick="downloadHalftone()" style="background: #0dcaf0; border-color: #0dcaf0; color: #000; width: 100%; font-size: 1.2rem; font-weight: bold; padding: 15px;">[ DOWNLOAD ASSET TRANSPARAN ]</button>
+          </div>
+
+      </div>
+  </section>
+
+  <script>
+    // 4. Protokol Pembersih Memori (Clear Data)
+    function clearHalftoneData() {
+        // 1. Reset input file agar pengguna bisa mengunggah file yang sama lagi
+        document.getElementById('image-upload').value = "";
+        
+        // 2. Kembalikan semua parameter ke setelan pabrik (Default)
+        document.getElementById('param-dotsize').value = 4;
+        document.getElementById('param-contrast').value = 1.0;
+        document.getElementById('param-invert').checked = false;
+        
+        // Perbarui teks angka di layar
+        updateVal('dotsize');
+        updateVal('contrast');
+        
+        // 3. Sembunyikan panel kendali dan area render
+        document.getElementById('halftone-controls').style.display = 'none';
+        document.getElementById('render-area').style.display = 'none';
+        
+        // 4. Hapus matriks piksel dari memori Kanvas
+        const srcCanvas = document.getElementById('source-canvas');
+        const targetCanvas = document.getElementById('halftone-canvas');
+        if (srcCanvas) srcCanvas.getContext('2d').clearRect(0, 0, srcCanvas.width, srcCanvas.height);
+        if (targetCanvas) targetCanvas.getContext('2d').clearRect(0, 0, targetCanvas.width, targetCanvas.height);
+        
+        // 5. Hancurkan objek gambar lama dari RAM komputer
+        imgElement = new Image(); 
+        
+        showToast("Memori ruang kerja dibersihkan. Siap untuk aset baru.", "info");
+    }
+    // ==========================================
+    // FUNGSI NOTIFIKASI
+    // ==========================================
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.style.padding = "15px 20px";
+        toast.style.background = type === 'error' ? 'rgba(255, 50, 50, 0.95)' : (type === 'process' ? 'rgba(13, 202, 240, 0.95)' : 'rgba(0, 255, 150, 0.95)');
+        toast.style.color = "#000";
+        toast.style.fontFamily = "'JetBrains Mono', monospace";
+        toast.style.fontWeight = "bold";
+        toast.style.borderRadius = "4px";
+        toast.style.boxShadow = "0 4px 15px rgba(0,0,0,0.5)";
+        toast.style.borderLeft = type === 'error' ? '5px solid #8a0303' : '5px solid #005500';
+        toast.style.transform = "translateX(100%)";
+        toast.style.transition = "transform 0.3s ease, opacity 0.5s ease";
+        toast.textContent = `> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.transform = "translateX(0)"; }, 10);
+        setTimeout(() => { toast.style.opacity = "0"; toast.style.transform = "translateX(100%)"; setTimeout(() => toast.remove(), 500); }, 3000);
+    }
+
+    // ==========================================
+    // MESIN PIKSEL HALFTONE
+    // ==========================================
+    let imgElement = new Image();
+    
+    function updateVal(param) {
+        document.getElementById(`val-${param}`).textContent = document.getElementById(`param-${param}`).value;
+    }
+
+    // 1. Memuat Gambar ke Memori
+    function loadImage() {
+        const fileInput = document.getElementById('image-upload');
+        if (fileInput.files.length === 0) return;
+
+        showToast("Membedah matriks gambar...", "process");
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            imgElement.onload = function() {
+                document.getElementById('halftone-controls').style.display = 'flex';
+                document.getElementById('render-area').style.display = 'block';
+                executeHalftone(); // Langsung eksekusi saat dimuat
+            }
+            imgElement.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+
+    // 2. Inti Algoritma Rasterisasi (Akar Teknis)
+    function executeHalftone() {
+        const srcCanvas = document.getElementById('source-canvas');
+        const srcCtx = srcCanvas.getContext('2d', { willReadFrequently: true });
+        const targetCanvas = document.getElementById('halftone-canvas');
+        const targetCtx = targetCanvas.getContext('2d');
+
+        // Parameter dari User
+        const dotSize = parseInt(document.getElementById('param-dotsize').value);
+        const contrast = parseFloat(document.getElementById('param-contrast').value);
+        const isInverted = document.getElementById('param-invert').checked; 
+
+        // [ PERBAIKAN UX ]: Ubah latar belakang kanvas agar kontras dengan warna tinta
+        targetCanvas.style.background = isInverted ? "#050505" : "#ffffff";
+        targetCanvas.style.border = isInverted ? "1px solid #555" : "none";
+
+        // Menyamakan resolusi kanvas dengan gambar asli
+        srcCanvas.width = imgElement.width;
+        srcCanvas.height = imgElement.height;
+        targetCanvas.width = imgElement.width;
+        targetCanvas.height = imgElement.height;
+
+        // Gambar asli ke kanvas sumber
+        srcCtx.drawImage(imgElement, 0, 0);
+
+        // Ekstrak data mentah piksel
+        const imageData = srcCtx.getImageData(0, 0, srcCanvas.width, srcCanvas.height);
+        const pixels = imageData.data;
+
+        // Bersihkan kanvas target (Membuatnya transparan)
+        targetCtx.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
+        
+        // Tentukan warna tinta
+        targetCtx.fillStyle = isInverted ? "#FFFFFF" : "#000000";
+
+        showToast("Menyusun ulang kisi Halftone...", "process");
+
+        for (let y = 0; y < srcCanvas.height; y += dotSize) {
+            for (let x = 0; x < srcCanvas.width; x += dotSize) {
+                
+                const index = (y * srcCanvas.width + x) * 4;
+                
+                const r = pixels[index];
+                const g = pixels[index + 1];
+                const b = pixels[index + 2];
+                const alpha = pixels[index + 3];
+
+                if (alpha < 50) continue;
+
+                let brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                
+                let dotRadius;
+                if (isInverted) {
+                    dotRadius = (brightness * contrast) * (dotSize / 2);
+                } else {
+                    dotRadius = ((1 - brightness) * contrast) * (dotSize / 2);
+                }
+
+                if (dotRadius > dotSize / 1.5) dotRadius = dotSize / 1.5;
+
+                if (dotRadius > 0.5) { 
+                    targetCtx.beginPath();
+                    targetCtx.arc(x + (dotSize / 2), y + (dotSize / 2), dotRadius, 0, Math.PI * 2, false);
+                    targetCtx.fill();
+                }
+            }
+        }
+        showToast("Render Halftone berhasil 100%.", "success");
+    }
+
+    // 3. Ekspor ke PNG Transparan (Siap Cetak)
+    function downloadHalftone() {
+        const targetCanvas = document.getElementById('halftone-canvas');
+        const dataURL = targetCanvas.toDataURL('image/png'); // Selalu PNG agar transparan
+        
+        const a = document.createElement('a');
+        a.href = dataURL;
+        a.download = "PMA_Halftone_Asset.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        showToast("Aset visual berhasil diunduh!", "success");
+    }
+  </script>
+</body>
+</html>
