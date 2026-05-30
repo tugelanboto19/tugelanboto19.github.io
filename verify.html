@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PMA Media - Document Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  
+  <style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #030303;
+        color: #0f0;
+        font-family: 'JetBrains Mono', monospace;
+        margin: 0;
+        padding: 20px;
+    }
+    
+    .scanner-box {
+        width: 100%;
+        max-width: 600px;
+        background: rgba(0, 20, 0, 0.8);
+        border: 1px solid #0f0;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        padding: 30px;
+        border-radius: 8px;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Efek Garis Scan ala Terminal */
+    .scanner-box::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        background: rgba(0, 255, 0, 0.5);
+        box-shadow: 0 0 15px #0f0;
+        animation: scanline 3s linear infinite;
+        opacity: 0.5;
+    }
+
+    @keyframes scanline {
+        0% { top: -10%; }
+        100% { top: 110%; }
+    }
+
+    .log-line {
+        margin: 5px 0;
+        font-size: 0.9rem;
+        opacity: 0;
+    }
+
+    .status-badge {
+        display: none;
+        margin-top: 30px;
+        padding: 20px;
+        border: 2px dashed #0f0;
+        background: rgba(0, 255, 0, 0.1);
+        text-align: center;
+    }
+    
+    .status-error {
+        border-color: #ff0000;
+        background: rgba(255, 0, 0, 0.1);
+        color: #ff0000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scanner-box" id="terminal-screen">
+      <h2 style="font-family: 'Share Tech Mono', monospace; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 0;">
+          > PMA_CRYPTOGRAPHIC_VERIFICATION
+      </h2>
+      
+      <div id="process-logs"></div>
+
+      <div id="result-success" class="status-badge">
+          <h1 style="margin: 0; font-size: 2rem;">✔️ DOKUMEN VALID</h1>
+          <p style="margin: 15px 0 5px 0; color: #aaa;">Sertifikat Digital Diterbitkan Oleh:</p>
+          <h3 style="margin: 0; color: #fff;">PMA MEDIA (Imam Falahi)</h3>
+          <p style="margin-top: 20px; font-size: 0.8rem; color: #666;">ID Hash Dokumen:</p>
+          <p id="hash-display" style="color: #0dcaf0; font-weight: bold; font-size: 1.2rem; margin: 5px 0;"></p>
+      </div>
+
+      <div id="result-error" class="status-badge status-error">
+          <h1 style="margin: 0; font-size: 2rem;">❌ AKSES DITOLAK</h1>
+          <p style="margin: 15px 0 0 0;">Parameter dokumen tidak ditemukan atau format tidak valid.</p>
+      </div>
+      
+      <div style="text-align: center; margin-top: 30px;">
+          <a href="index.html" class="launch-btn" style="text-decoration: none; display: inline-block; background: #222; color: #fff; padding: 10px 20px;">[ ESC ] KEMBALI KE BERANDA</a>
+      </div>
+  </div>
+
+  <script>
+      // 1. Ambil Parameter Hash dari URL (contoh: ?doc=PMA-12345)
+      const urlParams = new URLSearchParams(window.location.search);
+      const docHash = urlParams.get('doc');
+      
+      const logsContainer = document.getElementById('process-logs');
+      
+      // 2. Teks Animasi Proses (Simulasi Hacking/Verifikasi)
+      const logMessages = [
+          "Establishing secure connection to PMA_NODE_01...",
+          "Extracting parameter hash from URI...",
+          docHash ? `Hash detected: [ ${docHash} ]` : "FATAL ERROR: No Hash Detected.",
+          "Decrypting payload...",
+          "Checking cryptographic signatures against PMA ledger...",
+          "Matching timestamp and location markers...",
+          "Verification complete."
+      ];
+
+      // 3. Mesin Pengetikan Log Terminal Berjalan
+      let currentLogIndex = 0;
+      
+      function printLog() {
+          if (currentLogIndex < logMessages.length) {
+              // Jika tidak ada doc hash, hentikan log setelah baris ke-3
+              if (!docHash && currentLogIndex === 3) {
+                  showError();
+                  return;
+              }
+
+              const p = document.createElement('p');
+              p.className = 'log-line';
+              p.textContent = `> ${logMessages[currentLogIndex]}`;
+              logsContainer.appendChild(p);
+              
+              // Animasi muncul perlahan
+              setTimeout(() => p.style.opacity = 1, 50);
+              
+              currentLogIndex++;
+              // Waktu tunda acak antara 300ms - 800ms agar terlihat seperti sedang berproses nyata
+              setTimeout(printLog, Math.random() * 500 + 300);
+          } else {
+              // Selesai memuat log, tampilkan hasil
+              if (docHash) {
+                  showSuccess();
+              }
+          }
+      }
+
+      // 4. Eksekusi Tampilan Akhir
+      function showSuccess() {
+          // Hilangkan garis scan animasi
+          document.styleSheets[1].insertRule('.scanner-box::after { display: none; }', 0);
+          
+          const successDiv = document.getElementById('result-success');
+          document.getElementById('hash-display').textContent = docHash;
+          successDiv.style.display = 'block';
+      }
+
+      function showError() {
+          document.styleSheets[1].insertRule('.scanner-box::after { display: none; }', 0);
+          document.getElementById('result-error').style.display = 'block';
+      }
+
+      // Mulai proses saat halaman dimuat
+      window.onload = () => {
+          setTimeout(printLog, 500);
+      };
+  </script>
+</body>
+</html>

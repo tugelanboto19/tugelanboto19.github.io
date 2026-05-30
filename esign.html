@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +18,9 @@
   </script>
 </head>
 <body>
-<div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+  
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;"></div>
+
   <section id="digital-workspace" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 20px;">
       <div class="tool-workspace" style="display: block; width: 100%; max-width: 900px; margin: 0 auto;">
           
@@ -82,6 +85,40 @@
 
   <script>
     // ==========================================
+    // FUNGSI NOTIFIKASI MODERN (Pengganti Alert)
+    // ==========================================
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        
+        // Styling Toast
+        toast.style.padding = "15px 20px";
+        toast.style.background = type === 'error' ? 'rgba(255, 50, 50, 0.95)' : 'rgba(0, 255, 150, 0.95)';
+        toast.style.color = "#000";
+        toast.style.fontFamily = "'JetBrains Mono', monospace";
+        toast.style.fontWeight = "bold";
+        toast.style.borderRadius = "4px";
+        toast.style.boxShadow = "0 4px 15px rgba(0,0,0,0.5)";
+        toast.style.borderLeft = type === 'error' ? '5px solid #8a0303' : '5px solid #005500';
+        toast.style.transform = "translateX(100%)";
+        toast.style.transition = "transform 0.3s ease, opacity 0.5s ease";
+        toast.style.opacity = "1";
+        toast.textContent = `> ${message}`;
+        
+        container.appendChild(toast);
+        
+        // Animasi masuk
+        setTimeout(() => { toast.style.transform = "translateX(0)"; }, 10);
+        
+        // Animasi keluar dan hapus
+        setTimeout(() => { 
+            toast.style.opacity = "0"; 
+            toast.style.transform = "translateX(100%)";
+            setTimeout(() => toast.remove(), 500); 
+        }, 3500);
+    }
+
+    // ==========================================
     // 1. MESIN KANVAS TANDA TANGAN
     // ==========================================
     document.addEventListener("DOMContentLoaded", function() {
@@ -138,7 +175,11 @@
             const downloadBtn = document.getElementById('download-btn');
             if(downloadBtn) downloadBtn.href = dataURL; 
             document.getElementById('stamp-preview').style.display = 'block';
-        } catch (error) { alert("Error memproses stempel: " + error.message); }
+            
+            showToast("Stempel berhasil di-generate!", "success");
+        } catch (error) { 
+            showToast("Error memproses stempel: " + error.message, "error"); 
+        }
     }
 
     // ==========================================
@@ -154,7 +195,7 @@
 
         const stampPreviewSrc = document.getElementById('preview-img').src;
         if (!stampPreviewSrc || stampPreviewSrc === window.location.href) {
-            alert("Harap buat Tanda Tangan (GENERATE STAMP) terlebih dahulu sebelum mengunggah PDF!");
+            showToast("Harap buat Tanda Tangan terlebih dahulu!", "error");
             fileInput.value = ""; 
             return;
         }
@@ -178,9 +219,9 @@
             makeElementDraggable(stampEl, workspace);
 
             resizeStamp();
-
+            showToast("Dokumen PDF berhasil dimuat.", "success");
         } catch (error) {
-            alert("Gagal memuat PDF: " + error.message);
+            showToast("Gagal memuat PDF: " + error.message, "error");
         }
     }
 
@@ -220,11 +261,8 @@
 
     function makeElementDraggable(elmnt, container) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        elmnt.onmousedown = dragMouseDown;
-        elmnt.ontouchstart = dragTouchStart;
-
-        function dragMouseDown(e) { e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; }
-        function dragTouchStart(e) { pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; document.ontouchend = closeDragElement; document.ontouchmove = elementTouchDrag; }
+        elmnt.onmousedown = (e) => { e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; };
+        elmnt.ontouchstart = (e) => { pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; document.ontouchend = closeDragElement; document.ontouchmove = elementTouchDrag; };
 
         function elementDrag(e) { e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; applyBoundaries(); }
         function elementTouchDrag(e) { e.preventDefault(); pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; applyBoundaries(); }
@@ -260,7 +298,6 @@
             const workspace = document.getElementById('pdf-visual-workspace');
             const stampEl = document.getElementById('draggable-stamp');
 
-            // Kalkulasi Vektor Absolut (Mencegah Stempel Meloncat)
             const stampTop = parseFloat(stampEl.style.top) || 0;
             const stampLeft = parseFloat(stampEl.style.left) || 0;
             
@@ -282,27 +319,26 @@
 
             currentPdfBytes = await pdfDoc.save();
             
-            alert(`Stempel berhasil dikunci pada Halaman ${currentPageNum}! Anda bisa pindah halaman untuk menambah stempel lagi, atau klik UNDUH PDF FINAL.`);
+            showToast(`Stempel berhasil dikunci pada Halaman ${currentPageNum}!`, "success");
             
             pdfRawData = currentPdfBytes; 
             const loadingTask = pdfjsLib.getDocument({ data: pdfRawData });
             pdfDocInstance = await loadingTask.promise;
             renderPage(currentPageNum);
             
-            // Reset posisi stempel ke atas
             stampEl.style.top = "0px";
             stampEl.style.left = "0px";
 
             document.getElementById('save-pdf-btn').style.display = 'block';
 
         } catch (error) { 
-            alert("Error saat mengunci stempel: " + error.message); 
+            showToast("Error saat mengunci stempel: " + error.message, "error"); 
         }
     }
 
     function downloadFinalPDF() {
         if (!currentPdfBytes) {
-            alert("Anda belum mengunci stempel apa pun ke dalam dokumen!");
+            showToast("Anda belum mengunci stempel apa pun!", "error");
             return;
         }
         
@@ -317,7 +353,7 @@
         document.body.removeChild(a);
         
         URL.revokeObjectURL(downloadUrl);
-        alert("PROSES SELESAI! Dokumen PDF final berhasil diunduh.");
+        showToast("PROSES SELESAI! Dokumen PDF final berhasil diunduh.", "success");
     }
 
     function clearPDFData() {
@@ -338,30 +374,7 @@
             context.clearRect(0, 0, pdfCanvas.width, pdfCanvas.height);
         }
         
-        alert("Ruang kerja PDF dibersihkan. Stempel TTD tetap aman. Silakan unggah dokumen PDF berikutnya.");
-    }
-    function showToast(message, type = 'info') {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        
-        // Styling Toast (Cyber Style)
-        toast.style.padding = "15px 20px";
-        toast.style.background = type === 'error' ? 'rgba(255, 0, 0, 0.9)' : 'rgba(0, 255, 0, 0.9)';
-        toast.style.color = "#000";
-        toast.style.fontFamily = "'JetBrains Mono', monospace";
-        toast.style.fontWeight = "bold";
-        toast.style.borderRadius = "4px";
-        toast.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
-        toast.textContent = `> ${message}`;
-        
-        container.appendChild(toast);
-        
-        // Hilangkan otomatis setelah 3 detik
-        setTimeout(() => {
-            toast.style.opacity = "0";
-            toast.style.transition = "opacity 0.5s";
-            setTimeout(() => toast.remove(), 500);
-        }, 3000);
+        showToast("Ruang kerja PDF dibersihkan. Silakan unggah dokumen baru.", "success");
     }
   </script>
 </body>
