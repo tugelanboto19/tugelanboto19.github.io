@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PMA Media - Advanced Network OSINT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#050505">
+  <link rel="apple-touch-icon" href="assets/images/logopma.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  
+  <style>
+      .cyber-btn { background: #111; color: #aaa; border: 1px solid #333; padding: 8px 15px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; cursor: pointer; transition: 0.3s; flex: 1; }
+      .cyber-btn:hover { background: rgba(13, 202, 240, 0.1); border-color: #0dcaf0; color: #0dcaf0; }
+  </style>
+</head>
+<body>
+
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;"></div>
+
+  <section id="digital-workspace" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 20px;">
+      <div class="tool-workspace" style="display: block; width: 100%; max-width: 900px; margin: 0 auto;">
+          
+          <a href="index.html" class="launch-btn" style="text-decoration: none; display: inline-block; margin-bottom: 20px; background: #222; color: #fff;">[ ESC ] KEMBALI KE TERMINAL UTAMA</a>
+          
+          <div style="background: #050505; padding: 20px; border: 1px solid #0dcaf0; margin-bottom: 20px; box-shadow: 0 0 20px rgba(13, 202, 240, 0.1);">
+              <h3 style="color: #0dcaf0; margin-bottom: 10px; font-family: 'Share Tech Mono', monospace; text-transform: uppercase;">> PMA_NETWORK_OSINT_SUITE_v2</h3>
+              <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 20px;">Platform intelijen terbuka (OSINT) untuk rekonaisans topologi siber, melacak koordinat BGP, dan memindai pergerakan intrusi lokal.</p>
+              
+              <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: stretch; flex-wrap: wrap;">
+                  <div style="flex: 1; display: flex; align-items: center; background: #000; border: 1px solid #333; padding: 10px; min-width: 250px;">
+                      <span style="color: #0dcaf0; font-family: 'JetBrains Mono', monospace; font-weight: bold; margin-right: 10px;">root@target:~#</span>
+                      <input type="text" id="target-input" placeholder="Domain / IP (contoh: unisa.ac.id)" style="background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 1rem; width: 100%; outline: none;" onkeypress="handleEnter(event)">
+                  </div>
+              </div>
+
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                  <button class="cyber-btn" onclick="executeDNS()"><span style="color:#0f0;">[1]</span> DNS & GEO-IP RECON</button>
+                  <button class="cyber-btn" onclick="executeSubdomain()"><span style="color:#0dcaf0;">[2]</span> SUBDOMAIN EXTRACTOR</button>
+                  <button class="cyber-btn" onclick="executeLanScan()"><span style="color:#ff4444;">[3]</span> LOCAL SUBNET SWEEP</button>
+                  <button class="cyber-btn" onclick="clearTerminal()" style="flex: 0.5;">[ CLEAR ]</button>
+              </div>
+          </div>
+
+          <div id="terminal-screen" style="background: #000; border: 1px dashed #555; padding: 20px; height: 450px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #aaa; scroll-behavior: smooth;">
+              <p style="color: #666; margin: 0;">PMA OSINT Terminal aktif.</p>
+              <p style="color: #666; margin: 0;">Menunggu perintah intelijen...</p>
+          </div>
+
+      </div>
+  </section>
+
+  <script>
+    // FUNGSI NOTIFIKASI
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.style.padding = "15px 20px";
+        toast.style.background = type === 'error' ? 'rgba(255, 50, 50, 0.95)' : 'rgba(13, 202, 240, 0.95)';
+        toast.style.color = "#000";
+        toast.style.fontFamily = "'JetBrains Mono', monospace";
+        toast.style.fontWeight = "bold";
+        toast.style.borderRadius = "4px";
+        toast.style.boxShadow = "0 4px 15px rgba(0,0,0,0.5)";
+        toast.style.borderLeft = type === 'error' ? '5px solid #8a0303' : '5px solid #005500';
+        toast.textContent = `> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 3500);
+    }
+
+    // FUNGSI TERMINAL
+    function printTerminal(text, color = "#aaa") {
+        const screen = document.getElementById('terminal-screen');
+        const p = document.createElement('p');
+        p.style.color = color; p.style.margin = "5px 0"; p.textContent = text;
+        screen.appendChild(p);
+        screen.scrollTop = screen.scrollHeight; 
+    }
+    
+    function clearTerminal() {
+        document.getElementById('terminal-screen').innerHTML = '<p style="color: #666; margin: 0;">Terminal dibersihkan.</p>';
+    }
+
+    function cleanDomainInput() {
+        let target = document.getElementById('target-input').value.trim();
+        return target.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split('/')[0];
+    }
+
+    function handleEnter(e) { if (e.key === 'Enter') { executeDNS(); } }
+
+    // ==========================================
+    // MODUL 1: DNS & GEO-IP RECONNAISSANCE
+    // ==========================================
+    async function executeDNS() {
+        const target = cleanDomainInput();
+        if (!target) { showToast("Target wajib diisi!", "error"); return; }
+        
+        printTerminal(`\n> [MODUL 1] Memulai DNS & Geo-IP Recon untuk: ${target}`, "#0f0");
+        printTerminal("--------------------------------------------------", "#555");
+        
+        try {
+            printTerminal(">>> Ekstraksi IPv4 (A Record)...", "#fff");
+            const ipData = await fetchDnsRecord(target, "A");
+            
+            // Rantai Eksekusi: Jika IPv4 ditemukan, tembak API GeoIP
+            if (ipData && ipData.length > 0) {
+                const primaryIp = ipData[0].data;
+                printTerminal(`\n>>> Melacak koordinat fisik untuk IP: [ ${primaryIp} ]...`, "#0dcaf0");
+                await fetchGeoIP(primaryIp);
+            }
+
+            printTerminal("\n>>> Ekstraksi Server Email (MX)...", "#fff");
+            await fetchDnsRecord(target, "MX");
+
+            printTerminal("\n>>> Ekstraksi Sistem Keamanan (TXT/SPF)...", "#fff");
+            await fetchDnsRecord(target, "TXT");
+
+            printTerminal("--------------------------------------------------", "#555");
+        } catch (e) {
+            printTerminal(`[!] OSINT Error: ${e.message}`, "#ff4444");
+        }
+    }
+
+    async function fetchDnsRecord(domain, recordType) {
+        let typeNum = 1;
+        if (recordType === "MX") typeNum = 15;
+        if (recordType === "TXT") typeNum = 16;
+
+        const url = `https://dns.google/resolve?name=${domain}&type=${typeNum}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.Answer && data.Answer.length > 0) {
+            data.Answer.forEach(ans => printTerminal(`    [+] ${ans.data}`, "#0f0"));
+            return data.Answer;
+        } else {
+            printTerminal(`    [-] Data ${recordType} tidak ditemukan.`, "#888");
+            return null;
+        }
+    }
+
+    async function fetchGeoIP(ip) {
+        try {
+            // Menembak API Border Gateway Protocol
+            const res = await fetch(`https://ipapi.co/${ip}/json/`);
+            const geo = await res.json();
+            
+            if(geo.error) throw new Error(geo.reason);
+            
+            printTerminal(`    [ISP]      : ${geo.org || 'Unknown'}`, "#fff");
+            printTerminal(`    [ASN]      : ${geo.asn || 'Unknown'}`, "#fff");
+            printTerminal(`    [Negara]   : ${geo.country_name || 'Unknown'} (${geo.city || ''})`, "#fff");
+            printTerminal(`    [Koordinat]: Lat ${geo.latitude}, Lon ${geo.longitude}`, "#fff");
+        } catch (e) {
+            printTerminal(`    [!] Gagal menembus perisai Geo-IP: ${e.message}`, "#ff4444");
+        }
+    }
+
+    // ==========================================
+    // MODUL 2: SUBDOMAIN EXTRACTOR (CORS Bypass)
+    // ==========================================
+    async function executeSubdomain() {
+        const target = cleanDomainInput();
+        if (!target) { showToast("Target wajib diisi!", "error"); return; }
+        
+        printTerminal(`\n> [MODUL 2] Mengekstrak Log Kriptografi Subdomain: ${target}`, "#0dcaf0");
+        printTerminal(">>> Membuka terowongan CORS Proxy ke server crt.sh...", "#aaa");
+        
+        try {
+            // Membengkokkan jalur data JSON melalui allorigins untuk menghindari blokir CORS
+            const targetUrl = encodeURIComponent(`https://crt.sh/?q=%25.${target}&output=json`);
+            const proxyUrl = `https://api.allorigins.win/raw?url=${targetUrl}`;
+            
+            const response = await fetch(proxyUrl);
+            if (!response.ok) throw new Error("Terowongan proxy gagal.");
+            
+            const data = await response.json();
+            if (data.length === 0) {
+                printTerminal("    [-] Tidak ada subdomain rahasia yang terdeteksi.", "#888");
+                return;
+            }
+
+            // Membuang data duplikat menggunakan Set Matriks
+            const subdomains = new Set();
+            data.forEach(entry => subdomains.add(entry.name_value));
+            
+            printTerminal(`>>> Ditemukan ${subdomains.size} topologi subdomain:`, "#0f0");
+            subdomains.forEach(sub => {
+                // Bersihkan karakter wildcard (*)
+                const cleanSub = sub.replace('*.', '');
+                printTerminal(`    [+] ${cleanSub}`, "#fff");
+            });
+
+        } catch (e) {
+            printTerminal(`    [!] Server Certificate Transparency menolak akses. Coba lagi nanti.`, "#ff4444");
+        }
+    }
+
+    // ==========================================
+    // MODUL 3: LOCAL SUBNET SWEEP (Timing Attack)
+    // ==========================================
+    async function executeLanScan() {
+        printTerminal(`\n> [MODUL 3] Memulai Blind Sweep pada jaringan WiFi Lokal...`, "#ff4444");
+        printTerminal(">>> Target Subnet: 192.168.1.1 - 192.168.1.50 (Dibatasi 50 Host)", "#aaa");
+        printTerminal(">>> Mengeksploitasi anomali waktu respon peramban (Timing Attack).", "#555");
+        
+        showToast("Memindai radar lokal. Proses memakan waktu...", "process");
+
+        for (let i = 1; i <= 50; i++) {
+            const ip = `192.168.1.${i}`;
+            checkHostActiveness(ip);
+        }
+    }
+
+    function checkHostActiveness(ip) {
+        const start = performance.now();
+        const img = new Image();
+        
+        img.onload = function() {
+            // Jika merespon gambar (Router Admin Panel)
+            printTerminal(`    [!] HOST AKTIF TERDETEKSI: ${ip} (Port 80 Terbuka)`, "#0f0");
+        };
+        img.onerror = function() {
+            const timeTaken = performance.now() - start;
+            // Jika koneksi langsung ditolak (Device hidup tapi tidak ada web server)
+            if (timeTaken < 100) {
+                printTerminal(`    [+] Host Hidup: ${ip} (Menolak Koneksi)`, "#0dcaf0");
+            }
+            // Jika timeout (waktu lama), berarti IP kosong/mati, tidak perlu di print
+        };
+        
+        // Memaksa permintaan ke IP target
+        img.src = `http://${ip}/favicon.ico?${Math.random()}`;
+    }
+  </script>
+</body>
+</html>
