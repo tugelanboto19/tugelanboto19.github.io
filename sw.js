@@ -7,10 +7,11 @@ const urlsToCache = [
     '/index.html',
     '/esign.html',
     '/halftone.html',
+    '/network.html',
     '/verify.html',
     '/assets/css/style.css',
     '/assets/images/logopma.png',
-    '/network.html'
+   
     // Mengunci pustaka eksternal agar bisa jalan tanpa internet
     'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js',
