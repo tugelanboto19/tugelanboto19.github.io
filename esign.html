@@ -16,6 +16,9 @@
   <script>
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
   </script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#050505">
+  <link rel="apple-touch-icon" href="assets/images/logopma.png">
 </head>
 <body>
   
@@ -419,6 +422,18 @@
         }
         
         showToast("Ruang kerja PDF dibersihkan. Silakan unggah dokumen baru.", "success");
+    }
+    // Registrasi Service Worker PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('PMA_UPLINK: ServiceWorker aktif.', registration.scope);
+          })
+          .catch(err => {
+            console.log('PMA_ERROR: Gagal memuat ServiceWorker.', err);
+          });
+      });
     }
   </script>
 </body>

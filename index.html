@@ -217,6 +217,9 @@
       }
     }
   </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#050505">
+  <link rel="apple-touch-icon" href="assets/images/logopma.png">
 </head>
 <body>
 <section id="digital-workspace">
@@ -622,6 +625,18 @@ function saveSignature() {
     }
     
     setTimeout(typeLine, 1500);
+    // Registrasi Service Worker PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('PMA_UPLINK: ServiceWorker aktif.', registration.scope);
+          })
+          .catch(err => {
+            console.log('PMA_ERROR: Gagal memuat ServiceWorker.', err);
+          });
+      });
+    }
   </script>
 
 </body>
