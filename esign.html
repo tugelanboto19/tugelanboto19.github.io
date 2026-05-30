@@ -28,6 +28,13 @@
           
           <div class="canvas-container" style="border: 1px dashed #555; padding: 20px; background: rgba(0,0,0,0.3);">
               <h3 style="color: #0f0; margin-bottom: 15px; font-family: 'Share Tech Mono', monospace;">> 1. BUAT TANDA TANGAN</h3>
+              <div id="signer-identity" style="width: 100%; max-width: 500px; margin-bottom: 20px; text-align: left; background: #111; padding: 15px; border: 1px dashed #555;">
+                  <label style="color: #0f0; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; display: block; margin-bottom: 5px;">> IDENTITAS_PENANDATANGAN [Wajib]</label>
+                  
+                  <input type="text" id="signer-name" placeholder="Nama Lengkap (Sesuai KTP)" style="width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #333; margin-bottom: 10px; font-family: monospace; box-sizing: border-box;">
+                  
+                  <input type="email" id="signer-email" placeholder="Alamat Email Aktif" style="width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #333; font-family: monospace; box-sizing: border-box;">
+              </div>
               <canvas id="signaturePad" width="500" height="200" style="background: #fff; border-radius: 5px; cursor: crosshair; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); max-width: 100%; touch-action: none;"></canvas>
               
               <div class="canvas-controls" style="margin-top: 15px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: center;">
@@ -153,30 +160,67 @@
 
     function saveSignature() {
         try {
+            // 1. Ambil & Validasi Data Pengguna
+            const signerName = document.getElementById('signer-name').value.trim();
+            const signerEmail = document.getElementById('signer-email').value.trim();
+
+            if (!signerName || !signerEmail) {
+                showToast("SISTEM MENOLAK: Nama dan Email wajib diisi!", "error");
+                return;
+            }
+
             const includeText = document.getElementById('toggleTimestamp').checked;
             const docHash = "PMA-" + Math.random().toString(36).substr(2, 10).toUpperCase();
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID');
+            const timeStr = now.toLocaleTimeString('id-ID');
 
+            // 2. PEMBUATAN PAYLOAD TOKEN (Membungkus data ke dalam URL)
+            const payload = {
+                id: docHash,
+                name: signerName,
+                email: signerEmail,
+                date: dateStr,
+                time: timeStr
+            };
+            
+            // Encode JSON ke Base64 (Aman untuk URL)
+            const encodedToken = btoa(encodeURIComponent(JSON.stringify(payload)));
+            const verifyUrl = 'https://pma.wtf/verify.html?data=' + encodedToken;
+
+            // 3. Suntik Teks ke Gambar Kanvas
             if (includeText) {
-                const now = new Date();
-                const timeStamp = `SIGNED: ${now.toLocaleDateString('id-ID')} - ${now.toLocaleTimeString('id-ID')}`;
-                ctx.font = "11px monospace"; ctx.fillStyle = "#050505";
-                ctx.fillText(timeStamp, 10, canvas.height - 25); 
-                ctx.fillText("HASH: " + docHash, 10, canvas.height - 10); 
+                ctx.font = "11px 'JetBrains Mono', monospace"; 
+                ctx.fillStyle = "#050505";
+                ctx.fillText(`SIGNED BY: ${signerName.toUpperCase()}`, 10, canvas.height - 35); 
+                ctx.fillText(`DATE: ${dateStr} ${timeStr}`, 10, canvas.height - 20); 
+                ctx.fillText(`HASH: ${docHash}`, 10, canvas.height - 5); 
             }
 
+          // 4. Buat QR Code dengan URL yang berisi Token Data
             if (typeof QRious !== 'undefined') {
                 const qrCanvas = document.createElement('canvas');
-                new QRious({ element: qrCanvas, value: 'https://pma.wtf/verify?doc=' + docHash, size: 70, backgroundAlpha: 0, foreground: '#050505' });
-                ctx.drawImage(qrCanvas, canvas.width - 80, canvas.height - 80);
+                new QRious({ 
+                    element: qrCanvas, 
+                    value: verifyUrl, 
+                    size: 100, // [DIPERBESAR] Sebelumnya 75, sekarang diubah jadi 100 piksel
+                    backgroundAlpha: 0, 
+                    foreground: '#050505' 
+                });
+                
+                // [DISESUAIKAN] Karena QR membesar jadi 100, kita geser posisinya ke -110 
+                // agar menyisakan margin/jarak 10 piksel dari tepi kanan dan bawah kanvas.
+                ctx.drawImage(qrCanvas, canvas.width - 110, canvas.height - 110);
             }
 
+            // Ekspor ke layar
             const dataURL = canvas.toDataURL('image/png');
             document.getElementById('preview-img').src = dataURL;
             const downloadBtn = document.getElementById('download-btn');
             if(downloadBtn) downloadBtn.href = dataURL; 
             document.getElementById('stamp-preview').style.display = 'block';
             
-            showToast("Stempel berhasil di-generate!", "success");
+            showToast("Stempel berhasil di-generate beserta profil!", "success");
         } catch (error) { 
             showToast("Error memproses stempel: " + error.message, "error"); 
         }

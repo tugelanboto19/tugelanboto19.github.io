@@ -10,71 +10,17 @@
   <link rel="stylesheet" href="assets/css/style.css">
   
   <style>
-    body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        background-color: #030303;
-        color: #0f0;
-        font-family: 'JetBrains Mono', monospace;
-        margin: 0;
-        padding: 20px;
-    }
+    body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: #030303; color: #0f0; font-family: 'JetBrains Mono', monospace; margin: 0; padding: 20px; }
+    .scanner-box { width: 100%; max-width: 600px; background: rgba(0, 20, 0, 0.8); border: 1px solid #0f0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.2); padding: 30px; border-radius: 8px; text-align: left; position: relative; overflow: hidden; }
+    .scanner-box::after { content: ""; position: absolute; top: -50%; left: 0; width: 100%; height: 10px; background: rgba(0, 255, 0, 0.5); box-shadow: 0 0 15px #0f0; animation: scanline 3s linear infinite; opacity: 0.5; }
+    @keyframes scanline { 0% { top: -10%; } 100% { top: 110%; } }
+    .log-line { margin: 5px 0; font-size: 0.9rem; opacity: 0; }
+    .status-badge { display: none; margin-top: 30px; padding: 20px; border: 2px dashed #0f0; background: rgba(0, 255, 0, 0.1); }
+    .status-error { border-color: #ff0000; background: rgba(255, 0, 0, 0.1); color: #ff0000; text-align: center; }
     
-    .scanner-box {
-        width: 100%;
-        max-width: 600px;
-        background: rgba(0, 20, 0, 0.8);
-        border: 1px solid #0f0;
-        box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
-        padding: 30px;
-        border-radius: 8px;
-        text-align: left;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    /* Efek Garis Scan ala Terminal */
-    .scanner-box::after {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: 0;
-        width: 100%;
-        height: 10px;
-        background: rgba(0, 255, 0, 0.5);
-        box-shadow: 0 0 15px #0f0;
-        animation: scanline 3s linear infinite;
-        opacity: 0.5;
-    }
-
-    @keyframes scanline {
-        0% { top: -10%; }
-        100% { top: 110%; }
-    }
-
-    .log-line {
-        margin: 5px 0;
-        font-size: 0.9rem;
-        opacity: 0;
-    }
-
-    .status-badge {
-        display: none;
-        margin-top: 30px;
-        padding: 20px;
-        border: 2px dashed #0f0;
-        background: rgba(0, 255, 0, 0.1);
-        text-align: center;
-    }
-    
-    .status-error {
-        border-color: #ff0000;
-        background: rgba(255, 0, 0, 0.1);
-        color: #ff0000;
-    }
+    .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(0, 255, 0, 0.2); padding-bottom: 5px; }
+    .data-label { color: #aaa; font-size: 0.8rem; text-transform: uppercase; }
+    .data-value { color: #fff; font-weight: bold; font-family: 'Share Tech Mono', monospace; }
   </style>
 </head>
 <body>
@@ -87,79 +33,96 @@
       <div id="process-logs"></div>
 
       <div id="result-success" class="status-badge">
-          <h1 style="margin: 0; font-size: 2rem;">✔️ DOKUMEN VALID</h1>
-          <p style="margin: 15px 0 5px 0; color: #aaa;">Sertifikat Digital Diterbitkan Oleh:</p>
-          <h3 style="margin: 0; color: #fff;">PMA MEDIA (Imam Falahi)</h3>
-          <p style="margin-top: 20px; font-size: 0.8rem; color: #666;">ID Hash Dokumen:</p>
-          <p id="hash-display" style="color: #0dcaf0; font-weight: bold; font-size: 1.2rem; margin: 5px 0;"></p>
+          <h1 style="margin: 0 0 20px 0; font-size: 1.8rem; text-align: center;">✔️ DOKUMEN VALID</h1>
+          
+          <div class="data-row">
+              <span class="data-label">Ditandatangani Oleh</span>
+              <span class="data-value" id="val-name" style="color: #0dcaf0; font-size: 1.1rem;">-</span>
+          </div>
+          <div class="data-row">
+              <span class="data-label">Alamat Email</span>
+              <span class="data-value" id="val-email">-</span>
+          </div>
+          <div class="data-row">
+              <span class="data-label">Tanggal & Waktu</span>
+              <span class="data-value" id="val-datetime">-</span>
+          </div>
+          <div class="data-row" style="border: none; margin-top: 15px;">
+              <span class="data-label">Hash Dokumen</span>
+              <span class="data-value" id="val-hash" style="color: #0f0; letter-spacing: 2px;">-</span>
+          </div>
+          
+          <p style="margin-top: 25px; font-size: 0.75rem; color: #666; text-align: center; font-style: italic;">
+              Sertifikat digital ini diterbitkan secara kriptografis melalui utilitas PMA MEDIA.
+          </p>
       </div>
 
       <div id="result-error" class="status-badge status-error">
           <h1 style="margin: 0; font-size: 2rem;">❌ AKSES DITOLAK</h1>
-          <p style="margin: 15px 0 0 0;">Parameter dokumen tidak ditemukan atau format tidak valid.</p>
+          <p style="margin: 15px 0 0 0;">Token identitas tidak ditemukan atau format telah dimanipulasi.</p>
       </div>
       
       <div style="text-align: center; margin-top: 30px;">
-          <a href="index.html" class="launch-btn" style="text-decoration: none; display: inline-block; background: #222; color: #fff; padding: 10px 20px;">[ ESC ] KEMBALI KE BERANDA</a>
+          <a href="index.html" class="launch-btn" style="text-decoration: none; display: inline-block; background: #222; color: #fff; padding: 10px 20px; border: 1px solid #555;">[ ESC ] KEMBALI KE BERANDA</a>
       </div>
   </div>
 
   <script>
-      // 1. Ambil Parameter Hash dari URL (contoh: ?doc=PMA-12345)
+      // 1. Ambil Parameter "data" dari URL (Token Base64)
       const urlParams = new URLSearchParams(window.location.search);
-      const docHash = urlParams.get('doc');
+      const encodedToken = urlParams.get('data');
+      let decodedPayload = null;
+
+      // 2. Dekripsi Token Base64 kembali menjadi JSON
+      if (encodedToken) {
+          try {
+              decodedPayload = JSON.parse(decodeURIComponent(atob(encodedToken)));
+          } catch (e) {
+              console.error("Gagal membaca payload.");
+          }
+      }
       
       const logsContainer = document.getElementById('process-logs');
       
-      // 2. Teks Animasi Proses (Simulasi Hacking/Verifikasi)
       const logMessages = [
           "Establishing secure connection to PMA_NODE_01...",
-          "Extracting parameter hash from URI...",
-          docHash ? `Hash detected: [ ${docHash} ]` : "FATAL ERROR: No Hash Detected.",
-          "Decrypting payload...",
-          "Checking cryptographic signatures against PMA ledger...",
-          "Matching timestamp and location markers...",
+          "Intercepting cryptographic token from URI...",
+          decodedPayload ? "Token intercepted successfully." : "FATAL ERROR: No identity token detected.",
+          "Decrypting Base64 payload payload...",
+          "Verifying signer identity...",
+          decodedPayload ? `Match found for: ${decodedPayload.email}` : "Identity mismatch.",
           "Verification complete."
       ];
 
-      // 3. Mesin Pengetikan Log Terminal Berjalan
       let currentLogIndex = 0;
       
       function printLog() {
           if (currentLogIndex < logMessages.length) {
-              // Jika tidak ada doc hash, hentikan log setelah baris ke-3
-              if (!docHash && currentLogIndex === 3) {
-                  showError();
-                  return;
-              }
+              if (!decodedPayload && currentLogIndex === 3) { showError(); return; }
 
               const p = document.createElement('p');
               p.className = 'log-line';
               p.textContent = `> ${logMessages[currentLogIndex]}`;
               logsContainer.appendChild(p);
               
-              // Animasi muncul perlahan
               setTimeout(() => p.style.opacity = 1, 50);
-              
               currentLogIndex++;
-              // Waktu tunda acak antara 300ms - 800ms agar terlihat seperti sedang berproses nyata
-              setTimeout(printLog, Math.random() * 500 + 300);
+              setTimeout(printLog, Math.random() * 400 + 200);
           } else {
-              // Selesai memuat log, tampilkan hasil
-              if (docHash) {
-                  showSuccess();
-              }
+              if (decodedPayload) showSuccess();
           }
       }
 
-      // 4. Eksekusi Tampilan Akhir
       function showSuccess() {
-          // Hilangkan garis scan animasi
           document.styleSheets[1].insertRule('.scanner-box::after { display: none; }', 0);
           
-          const successDiv = document.getElementById('result-success');
-          document.getElementById('hash-display').textContent = docHash;
-          successDiv.style.display = 'block';
+          // Memasukkan data ke dalam antarmuka sertifikat
+          document.getElementById('val-name').textContent = decodedPayload.name.toUpperCase();
+          document.getElementById('val-email').textContent = decodedPayload.email;
+          document.getElementById('val-datetime').textContent = `${decodedPayload.date} | ${decodedPayload.time}`;
+          document.getElementById('val-hash').textContent = decodedPayload.id;
+          
+          document.getElementById('result-success').style.display = 'block';
       }
 
       function showError() {
@@ -167,10 +130,7 @@
           document.getElementById('result-error').style.display = 'block';
       }
 
-      // Mulai proses saat halaman dimuat
-      window.onload = () => {
-          setTimeout(printLog, 500);
-      };
+      window.onload = () => { setTimeout(printLog, 500); };
   </script>
 </body>
 </html>
