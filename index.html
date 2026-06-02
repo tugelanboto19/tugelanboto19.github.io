@@ -19,137 +19,138 @@
   
   <style>
     /* ROOT & RESET */
-    body, html {
-        margin: 0; padding: 0; min-height: 100vh;
-        background-color: #030303 !important;
+    body, html { margin: 0; padding: 0; min-height: 100vh; background-color: #030303 !important; color: #fff; font-family: 'Montserrat', sans-serif; background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 40px 40px; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; box-shadow: inset 0 0 150px rgba(0,0,0,0.9); }
+    .crt-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%); background-size: 100% 3px; z-index: 999; pointer-events: none; }
+
+    /* =========================================
+       ARSITEKTUR HEADER & CAROUSEL (DIPERBAIKI)
+       ========================================= */
+    .utilities-section {
+        width: 95%;
+        max-width: 1100px;
+        margin: 30px auto 10px auto;
+        z-index: 10;
+        position: relative;
+    }
+
+    /* Header Sejajar dengan Kontrol */
+    .carousel-header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+
+    .header-text h1 { margin: 0; font-family: 'Share Tech Mono', monospace; font-size: 2rem; letter-spacing: 1px; }
+    .header-text span { color: #0dcaf0; }
+    .header-text p { margin: 5px 0 0 0; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #888; }
+
+    .carousel-controls { display: flex; gap: 8px; }
+    .nav-arrow {
+        background: #111;
+        border: 1px solid #333;
         color: #fff;
-        font-family: 'Montserrat', sans-serif;
-        background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-        background-size: 30px 30px;
-        
-        display: flex; 
-        flex-direction: column; 
-        justify-content: flex-start; 
+        font-size: 1rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
         align-items: center;
-        
-        box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 4px;
+    }
+    .nav-arrow:hover { background: rgba(13, 202, 240, 0.1); border-color: #0dcaf0; color: #0dcaf0; box-shadow: 0 0 10px rgba(13, 202, 240, 0.3); }
+
+    /* Matriks Lorong Kartu */
+    .grid-showcase {
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        padding: 5px 5px 25px 5px; /* Memberi ruang Y agar shadow tidak terpotong */
+        scrollbar-width: none; 
+        -ms-overflow-style: none; 
+    }
+    .grid-showcase::-webkit-scrollbar { display: none; }
+
+    .tool-card {
+        flex: 0 0 auto; 
+        width: 320px;   
+        min-height: 220px; /* Memaksa proporsi sama rata */
+        background: rgba(12, 12, 12, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Menyebarkan isi rata atas-bawah */
+        backdrop-filter: blur(5px);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
-    /* 1. CRT MONITOR SCANLINES EFFECT */
-    .crt-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
-      background-size: 100% 3px;
-      z-index: 999; pointer-events: none; 
-    }
+    .tool-card:hover { border-color: #0dcaf0; box-shadow: 0 8px 20px rgba(13, 202, 240, 0.15); transform: translateY(-4px); }
+    
+    .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .tool-card h3 { font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; margin: 0 0 8px 0; color: #fff; text-transform: uppercase;}
+    .tool-card p { font-size: 0.75rem; color: #aaa; margin: 0 0 20px 0; line-height: 1.6; }
+    
+    .launch-btn { font-size: 0.8rem; padding: 10px; width: 100%; border: 1px solid #333; background: #000; color: #0dcaf0; transition: 0.3s; font-family: 'JetBrains Mono', monospace; box-sizing: border-box; text-align: center; text-decoration: none; display: block; }
+    .launch-btn:hover { background: rgba(13, 202, 240, 0.1); border-color: #0dcaf0; letter-spacing: 2px;}
 
-    /* BENTO GRID ARCHITECTURE */
-    .dashboard-container {
-      width: 95%; max-width: 1100px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-auto-rows: minmax(110px, auto);
-      gap: 15px; padding: 40px 0; z-index: 10;
-      animation: screen-flicker 0.2s infinite;
-    }
+    .tool-card.locked { border-color: #1a1a1a; background: rgba(5,5,5,0.8); }
+    .tool-card.locked h3, .tool-card.locked p, .tool-card.locked .card-icon { opacity: 0.5; transition: 0.3s; }
+    .tool-card.locked .launch-btn { color: #555; cursor: not-allowed; border-color: #222; pointer-events: none;}
+    .tool-card.locked:hover { border-color: #ff4444; box-shadow: 0 8px 20px rgba(255, 68, 68, 0.1); }
+    .tool-card.locked:hover h3, .tool-card.locked:hover p, .tool-card.locked:hover .card-icon { opacity: 1; }
+    .tool-card.locked:hover .launch-btn { color: #ff4444; border-color: #ff4444; background: rgba(255,68,68,0.1); }
 
-    @keyframes screen-flicker {
-      0% { opacity: 0.98; }
-      50% { opacity: 1; filter: brightness(1.02); }
-      100% { opacity: 0.99; }
-    }
+    /* =========================================
+       BENTO GRID ARCHITECTURE (BAWAH)
+       ========================================= */
+    .dashboard-container { width: 95%; max-width: 1100px; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(110px, auto); gap: 15px; padding-bottom: 50px; z-index: 10; animation: screen-flicker 0.2s infinite; }
+    @keyframes screen-flicker { 0% { opacity: 0.98; } 50% { opacity: 1; filter: brightness(1.02); } 100% { opacity: 0.99; } }
+    .widget { background: rgba(12, 12, 12, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; padding: 25px; display: flex; flex-direction: column; position: relative; overflow: hidden; backdrop-filter: blur(10px); transition: border-color 0.3s ease, transform 0.3s ease; }
+    .widget:hover { border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,255,0,0.05); }
 
-    /* WIDGET BOX STYLING */
-    .widget {
-      background: rgba(12, 12, 12, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 6px; padding: 25px;
-      display: flex; flex-direction: column; position: relative;
-      overflow: hidden; backdrop-filter: blur(10px);
-      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-    }
-    .widget:hover { border-color: rgba(255, 255, 255, 0.3); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,255,0,0.1); }
-
-    /* WIDGET ALLOCATIONS */
     .w-brand { grid-column: span 2; grid-row: span 2; justify-content: center; }
     .w-status { grid-column: span 1; grid-row: span 1; justify-content: space-between; }
     .w-uplink { grid-column: span 1; grid-row: span 1; justify-content: space-between; }
     .w-services { grid-column: span 1; grid-row: span 1; justify-content: center;}
     .w-vitals { grid-column: span 1; grid-row: span 1; justify-content: center;}
-    .w-terminal { grid-column: span 4; grid-row: span 2; background: rgba(5, 5, 5, 0.95); border-color: #222; height: 220px; overflow-y: auto; }
+    .w-terminal { grid-column: span 4; grid-row: span 2; background: rgba(5, 5, 5, 0.95); border-color: #1a1a1a; height: 240px; overflow-y: auto; }
     .w-nav-cv { grid-column: span 2; grid-row: span 2; }
     .w-nav-porto { grid-column: span 2; grid-row: span 2; }
 
-    .widget-title { font-size: 0.65rem; color: #888; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;}
+    .widget-title { font-size: 0.65rem; color: #777; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;}
 
-    /* --- BRAND WIDGET --- */
+    /* BRAND WIDGET */
     .brand-content { display: flex; align-items: center; justify-content: flex-start; gap: 35px; }
-    
-    .brand-logo { 
-      width: 120px; 
-      filter: grayscale(1) brightness(1.5) drop-shadow(0 0 10px rgba(255,255,255,0.1)); 
-      cursor: crosshair;
-    }
-    
+    .brand-logo { width: 110px; filter: grayscale(1) brightness(1.5) drop-shadow(0 0 10px rgba(255,255,255,0.05)); cursor: crosshair; }
     .brand-logo:hover { animation: logo-glitch 0.2s infinite; }
-    @keyframes logo-glitch {
-      0%, 100% { transform: translate(0); filter: grayscale(1) brightness(1.5); }
-      20% { transform: translate(-3px, 2px); filter: grayscale(1) brightness(2) drop-shadow(0 0 15px rgba(0,255,0,0.8)); }
-      40% { transform: translate(3px, -2px); filter: grayscale(1) brightness(0.5); }
-      60% { transform: translate(-3px, -2px); filter: grayscale(1) brightness(2) drop-shadow(0 0 15px rgba(255,0,0,0.8)); }
-      80% { transform: translate(3px, 2px); filter: grayscale(1) brightness(1.5) drop-shadow(0 0 15px rgba(0,255,255,0.8)); }
-    }
-
+    @keyframes logo-glitch { 0%, 100% { transform: translate(0); filter: grayscale(1) brightness(1.5); } 20% { transform: translate(-3px, 2px); filter: grayscale(1) brightness(2) drop-shadow(0 0 15px rgba(0,255,0,0.8)); } 40% { transform: translate(3px, -2px); filter: grayscale(1) brightness(0.5); } 60% { transform: translate(-3px, -2px); filter: grayscale(1) brightness(2) drop-shadow(0 0 15px rgba(255,0,0,0.8)); } 80% { transform: translate(3px, 2px); filter: grayscale(1) brightness(1.5) drop-shadow(0 0 15px rgba(0,255,255,0.8)); } }
     .brand-text-box { display: flex; flex-direction: column; }
-    
-    .brand-text-box h1 {
-      font-family: 'Share Tech Mono', monospace; 
-      font-size: 3.8rem; font-weight: 400;
-      margin: 0 0 5px 0; letter-spacing: 4px;
-      color: #fff;
-      text-shadow: 0 0 15px rgba(255,255,255,0.4);
-      cursor: crosshair;
-    }
-    
-    .brand-text-box p { 
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem; letter-spacing: 4px; color: #0f0; 
-      margin: 0; font-weight: 700; line-height: 1.8;
-      white-space: pre-wrap; 
-      cursor: crosshair;
-    }
+    .brand-text-box h1 { font-family: 'Share Tech Mono', monospace; font-size: 3.5rem; font-weight: 400; margin: 0 0 5px 0; letter-spacing: 4px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.3); cursor: crosshair; }
+    .brand-text-box p { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 4px; color: #0f0; margin: 0; font-weight: 700; line-height: 1.8; white-space: pre-wrap; cursor: crosshair; }
 
-    /* STATUS WIDGET */
+    /* SMALL WIDGETS */
     .dot { width: 8px; height: 8px; background: #0f0; border-radius: 50%; box-shadow: 0 0 10px #0f0; animation: pulse 2s infinite; }
     .clock { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 5px;}
     .location { font-size: 0.65rem; color: #666; margin-top: 2px; }
-
-    /* UPLINK WIDGET */
-    .uplink-btn {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff; text-decoration: none; padding: 10px; border-radius: 4px;
-      font-size: 0.8rem; font-weight: 600; transition: 0.3s; width: 100%; box-sizing: border-box;
-      font-family: 'JetBrains Mono', monospace;
-    }
+    .uplink-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; padding: 12px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; transition: 0.3s; width: 100%; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
     .uplink-btn:hover { background: rgba(0, 255, 0, 0.1); border-color: #0f0; color: #0f0; letter-spacing: 2px; }
-
-    /* SERVICES WIDGET */
-    .service-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .service-tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .tag { font-size: 0.6rem; border: 1px solid #333; padding: 4px 8px; border-radius: 2px; color: #0f0; background: rgba(0,255,0,0.05); font-family: 'JetBrains Mono', monospace;}
-
-    /* VITALS WIDGET */
     .vital-row { margin-bottom: 8px; }
-    .vital-label { font-size: 0.6rem; color: #aaa; display: flex; justify-content: space-between; margin-bottom: 3px; font-family: 'JetBrains Mono', monospace;}
+    .vital-label { font-size: 0.6rem; color: #aaa; display: flex; justify-content: space-between; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace;}
     .vital-bar { width: 100%; height: 4px; background: #222; border-radius: 2px; overflow: hidden; }
     .vital-fill { height: 100%; background: #0f0; box-shadow: 0 0 5px #0f0;}
     .cpu-fill { width: 45%; animation: cpu-load 3s infinite alternate ease-in-out; }
     .ram-fill { width: 68%; }
 
-    /* TERMINAL CHATBOT WIDGET */
-    .terminal-container { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.6; display: flex; flex-direction: column; gap: 5px; }
+    /* TERMINAL WIDGET */
+    .terminal-container { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.6; display: flex; flex-direction: column; gap: 4px; }
     .w-terminal::-webkit-scrollbar { width: 5px; }
     .w-terminal::-webkit-scrollbar-track { background: #111; }
     .w-terminal::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
@@ -158,30 +159,23 @@
     .sys-text { color: #0dcaf0; } 
     .txt-text { color: #0f0; } 
     .warn-text { color: #ff4444; font-weight: bold; } 
-    .cursor { display: inline-block; width: 8px; height: 13px; background: #0f0; animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 5px;}
+    .cursor { display: inline-block; width: 8px; height: 14px; background: #0f0; animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 5px;}
 
-    /* NAVIGATION BUTTONS */
-    .nav-btn {
-      text-decoration: none; color: #fff; height: 100%; width: 100%;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      text-align: center; transition: all 0.3s ease; padding: 10px 0;
-    }
-    .nav-btn i { font-size: 2.5rem; margin-bottom: 12px; color: #555; transition: 0.3s; }
+    /* NAV BUTTONS */
+    .nav-btn { text-decoration: none; color: #fff; height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: all 0.3s ease; padding: 10px 0; }
+    .nav-btn i { font-size: 2.8rem; margin-bottom: 15px; color: #444; transition: 0.3s; }
     .nav-btn h2 { margin: 0; font-size: 1.2rem; letter-spacing: 4px; font-family: 'Share Tech Mono', monospace; }
     .nav-btn p { font-size: 0.65rem; color: #666; margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
-    
-    .w-nav-cv:hover { border-color: #0dcaf0; background: rgba(13, 202, 240, 0.05); }
+    .w-nav-cv:hover { border-color: #0dcaf0; background: rgba(13, 202, 240, 0.03); }
     .w-nav-cv:hover i { color: #0dcaf0; transform: scale(1.1); text-shadow: 0 0 15px rgba(13, 202, 240, 0.5); }
-    
-    .w-nav-porto:hover { border-color: #ff4444; background: rgba(255, 68, 68, 0.05); }
+    .w-nav-porto:hover { border-color: #ff4444; background: rgba(255, 68, 68, 0.03); }
     .w-nav-porto:hover i { color: #ff4444; transform: scale(1.1); text-shadow: 0 0 15px rgba(255, 68, 68, 0.5); }
 
-    /* ANIMATIONS */
+    /* ANIMATIONS & RESPONSIVE */
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.5); } 70% { box-shadow: 0 0 0 8px rgba(0, 255, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); } }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     @keyframes cpu-load { 0% { width: 30%; } 20% { width: 85%; } 50% { width: 45%; } 80% { width: 95%; } 100% { width: 50%; } }
 
-    /* RESPONSIVE TABLET */
     @media (max-width: 1000px) {
       .dashboard-container { grid-template-columns: 1fr 1fr; }
       .w-brand { grid-column: span 2; }
@@ -193,66 +187,91 @@
       .brand-text-box p { font-size: 0.6rem; letter-spacing: 2px; }
     }
 
-    /* RESPONSIVE SMARTPHONE */
     @media (max-width: 600px) {
-      .dashboard-container { 
-        grid-template-columns: 1fr; 
-        padding: 20px 0;
-      }
-      .w-brand, .w-status, .w-uplink, .w-services, .w-vitals, .w-terminal, .w-nav-cv, .w-nav-porto { 
-        grid-column: span 1 !important; 
-        grid-row: span 1 !important;
-      }
-      .workspace-header h1 {
-        font-size: 1.8rem; 
-      }
-      .brand-text-box h1 {
-        font-size: 1.8rem !important; 
-      }
-      .w-terminal {
-        height: 300px; 
-      }
-      .grid-showcase {
-        grid-template-columns: 1fr; 
-      }
+      .carousel-header-container { flex-direction: column; align-items: flex-start; gap: 15px; }
+      .tool-card { width: 280px; } 
+      .dashboard-container { grid-template-columns: 1fr; }
+      .w-brand, .w-status, .w-uplink, .w-services, .w-vitals, .w-terminal, .w-nav-cv, .w-nav-porto { grid-column: span 1 !important; grid-row: span 1 !important; }
+      .w-terminal { height: 300px; }
     }
   </style>
 </head>
 <body>
-<section id="digital-workspace">
-    <div class="workspace-header">
-        <h1>PMA Media <span>Utilities</span></h1>
-        <p>Client-side computing tools. 100% secure, processed locally in your browser.</p>
-        
-        <button id="pma-install-btn" class="launch-btn" style="display: none; background: #b8860b; border-color: #ffd700; color: #fff; margin-top: 15px; font-size: 1.2rem; padding: 10px 30px;">
-            <i class="fa-solid fa-download"></i> INSTALL APP (OFFLINE MODE)
-        </button>
-    </div>
 
-    <div class="grid-showcase">
-        
-        <div class="tool-card active-tool" id="card-esign">
-            <div class="card-icon">🖋️</div>
-            <h3>In-Browser E-Sign & Stamp</h3>
-            <p>Inject visual stamps and cryptographic signatures into PDF documents precisely. Zero server uploads, maximum privacy.</p>
-            <a href="esign.html" class="launch-btn" style="text-decoration: none; display: inline-block; text-align: center;">[ LAUNCH ]</a>
+<section class="utilities-section">
+    <div class="carousel-header-container">
+        <div class="header-text">
+            <h1>PMA Media <span>Utilities</span></h1>
+            <p>Client-side computing tools. 100% secure, processed locally.</p>
         </div>
-
-        <div class="tool-card" id="card-halftone">
-            <div class="card-icon">🖨️</div>
-            <h3>Halftone & Dithering Processor</h3>
-            <p>Convert gradient images into print-ready (1-bit) raster formats. Essential for screen printing and retro visual design.</p>
-            <a href="halftone.html" class="launch-btn" style="text-decoration: none; display: inline-block; text-align: center;">[ LAUNCH ]</a>
-        </div>
-
-        <div class="tool-card" id="card-network">
-            <div class="card-icon">🌐</div>
-            <h3>Advanced Network OSINT</h3>
-            <p>Execute OSINT DNS resolution, extract IP topology, and monitor network health via DoH protocols in real-time.</p>
-            <a href="network.html" class="launch-btn" style="text-decoration: none; display: inline-block; text-align: center;">[ LAUNCH ]</a>
+        
+        <div class="carousel-controls">
+            <button class="nav-arrow" id="btn-scroll-left"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="nav-arrow" id="btn-scroll-right"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
     </div>
 
+    <button id="pma-install-btn" class="launch-btn" style="display: none; background: #b8860b; border-color: #ffd700; color: #fff; margin-bottom: 20px; width: auto; display: inline-block;">
+        <i class="fa-solid fa-download"></i> INSTALL APP (OFFLINE MODE)
+    </button>
+
+    <div class="grid-showcase" id="utilities-carousel">
+        
+        <div class="tool-card">
+            <div>
+                <div class="card-icon">🖋️</div>
+                <h3>E-Sign & Stamp</h3>
+                <p>Inject visual stamps and cryptographic signatures into PDF documents precisely. Zero server uploads.</p>
+            </div>
+            <a href="esign.html" class="launch-btn">[ LAUNCH MODULE ]</a>
+        </div>
+
+        <div class="tool-card">
+            <div>
+                <div class="card-icon">🖨️</div>
+                <h3>Halftone Engine</h3>
+                <p>Convert gradient images into 1-bit raster formats. Essential for screen printing and visual design.</p>
+            </div>
+            <a href="halftone.html" class="launch-btn">[ LAUNCH MODULE ]</a>
+        </div>
+
+        <div class="tool-card">
+            <div>
+                <div class="card-icon">🌐</div>
+                <h3>Network OSINT</h3>
+                <p>Execute OSINT DNS resolution, extract IP topology, and monitor network health via DoH protocols.</p>
+            </div>
+            <a href="network.html" class="launch-btn">[ LAUNCH MODULE ]</a>
+        </div>
+
+        <div class="tool-card locked">
+            <div>
+                <div class="card-icon">👁️‍🗨️</div>
+                <h3>A.I Face Obfuscator</h3>
+                <p>TensorFlow.js vision model to detect and redact human faces instantly in browser memory.</p>
+            </div>
+            <a href="#" class="launch-btn">[ SYSTEM LOCKED ]</a>
+        </div>
+
+        <div class="tool-card locked">
+            <div>
+                <div class="card-icon">📡</div>
+                <h3>WebRTC Dead Drop</h3>
+                <p>Peer-to-peer encrypted file transfer tunnel. Bypass intermediary servers for absolute privacy.</p>
+            </div>
+            <a href="#" class="launch-btn">[ SYSTEM LOCKED ]</a>
+        </div>
+
+        <div class="tool-card locked">
+            <div>
+                <div class="card-icon">🛡️</div>
+                <h3>EXIF Sanitizer</h3>
+                <p>Binary header manipulation to strip GPS coordinates and metadata tracks from image assets.</p>
+            </div>
+            <a href="#" class="launch-btn">[ SYSTEM LOCKED ]</a>
+        </div>
+
+    </div>
 </section>
 
   <div class="crt-overlay"></div>
@@ -332,208 +351,120 @@
     // --- LIVE CLOCK ---
     function updateClock() {
       const now = new Date();
-      const timeString = now.toLocaleTimeString('en-US', { hour12: false });
-      document.getElementById('live-clock').textContent = timeString;
+      document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+    setInterval(updateClock, 1000); updateClock();
 
     // --- DATA DECRYPTION HOVER EFFECT ---
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
-    const decryptElements = document.querySelectorAll('.decrypt-text');
-
-    decryptElements.forEach(element => {
+    document.querySelectorAll('.decrypt-text').forEach(element => {
       element.addEventListener('mouseenter', event => {
-        let iteration = 0;
-        const targetText = event.target.dataset.target;
-        
+        let iteration = 0; const targetText = event.target.dataset.target;
         clearInterval(element.interval);
-        
         element.interval = setInterval(() => {
-          event.target.innerText = targetText
-            .split("")
-            .map((letter, index) => {
-              if(index < iteration) { return targetText[index]; }
-              if(letter === " " || letter === "•" || letter === "\n") { return letter; }
-              return letters[Math.floor(Math.random() * letters.length)];
-            })
-            .join("");
-          
+          event.target.innerText = targetText.split("").map((letter, index) => {
+            if(index < iteration) { return targetText[index]; }
+            if(letter === " " || letter === "•" || letter === "\n") { return letter; }
+            return letters[Math.floor(Math.random() * letters.length)];
+          }).join("");
           if(iteration >= targetText.length){ clearInterval(element.interval); }
           iteration += 1 / 3;
         }, 30);
       });
     });
 
+    // --- MESIN CAROUSEL AUTO-PAN ---
+    const carousel = document.getElementById('utilities-carousel');
+    const btnLeft = document.getElementById('btn-scroll-left');
+    const btnRight = document.getElementById('btn-scroll-right');
+    
+    btnLeft.addEventListener('click', () => { carousel.scrollBy({ left: -340, behavior: 'smooth' }); });
+    btnRight.addEventListener('click', () => { carousel.scrollBy({ left: 340, behavior: 'smooth' }); });
+
+    let scrollDirection = 1; 
+    let isHovered = false;
+    const scrollSpeed = 0.5; // Diperlambat sedikit agar lebih elegan
+
+    carousel.addEventListener('mouseenter', () => isHovered = true);
+    carousel.addEventListener('mouseleave', () => isHovered = false);
+    btnLeft.addEventListener('mouseenter', () => isHovered = true);
+    btnRight.addEventListener('mouseenter', () => isHovered = true);
+
+    setInterval(() => {
+        if (!isHovered) {
+            if (carousel.scrollLeft >= (carousel.scrollWidth - carousel.clientWidth - 1)) {
+                scrollDirection = -1;
+            } else if (carousel.scrollLeft <= 0) {
+                scrollDirection = 1;
+            }
+            carousel.scrollBy({ left: scrollSpeed * scrollDirection, behavior: 'auto' });
+        }
+    }, 20); 
+
     // --- AI CHATBOT TERMINAL SCRIPT ---
-    const seq1 = [
+    const seq = [
       { text: "root@pma-media:~$ ./cyber_defense_grid.sh --engage", style: "cmd-text", speed: 15, delay: 500 },
       { text: "CRITICAL: Inbound DDoS attack detected on port 443.", style: "warn-text", speed: 20, delay: 600 },
-      { text: "Traffic volume: 450 Gbps. Source signatures: Unknown.", style: "txt-text", speed: 10, delay: 400 },
       { text: "Deploying Elastic Blackhole Routing...", style: "cmd-text", speed: 15, delay: 800 },
-      { text: "Filtering malicious packets... [||||||||..........] 45%", style: "txt-text", speed: 10, delay: 600 },
       { text: "Filtering malicious packets... [||||||||||||||||||] 100%", style: "txt-text", speed: 10, delay: 500 },
-      { text: "Attack mitigated. Initiating trace-back sequence...", style: "cmd-text", speed: 15, delay: 1000 },
-      { text: "Tracing IP hops: Node [RU] -> Node [CN] -> Node [BR]...", style: "txt-text", speed: 15, delay: 800 },
-      { text: "Attacker origin masked. Deploying counter-measures.", style: "sys-text", speed: 20, delay: 800 },
-      { text: "Entity 'PMA MEDIA' Mainframe secured. (Precision • Maintenance • Authentic)", style: "sys-text", speed: 15, delay: 600 },
+      { text: "Entity 'PMA MEDIA' Mainframe secured.", style: "sys-text", speed: 15, delay: 600 },
       { text: "Scanning local directories for compromised files...", style: "cmd-text", speed: 20, delay: 800 },
-      { text: "WARNING: Highly volatile visual anomaly detected in Sector-7.", style: "warn-text", speed: 25, delay: 800 },
+      { text: "WARNING: Volatile visual anomaly detected in Sector-7.", style: "warn-text", speed: 25, delay: 800 },
       { text: "ISOLATING: [TUGELANBOTO_19] Explicit graphic aesthetics.", style: "warn-text", speed: 20, delay: 1000 },
       { text: "Containment field stable. Select your interface protocol.", style: "txt-text", speed: 15, delay: 0 }
     ];
-
-    const seq2 = [
-      { text: "root@pma-media:~$ exploit_payload --target=mainframe --zero-day", style: "cmd-text", speed: 20, delay: 800 },
-      { text: "Scanning target for vulnerabilities... CVE-2026-4489 found.", style: "txt-text", speed: 15, delay: 600 },
-      { text: "Compiling payload syntax...", style: "cmd-text", speed: 15, delay: 1000 },
-      { text: "Injecting memory-resident exploit... [|||||||.............] 33%", style: "txt-text", speed: 10, delay: 800 },
-      { text: "Injecting memory-resident exploit... [||||||||||||||......] 75%", style: "txt-text", speed: 10, delay: 800 },
-      { text: "Injecting memory-resident exploit... [||||||||||||||||||||] 100%", style: "txt-text", speed: 10, delay: 500 },
-      { text: "Bypassing RSA-8192 encryption keys... [CRACKED]", style: "sys-text", speed: 15, delay: 600 },
-      { text: "Overriding system privileges...", style: "cmd-text", speed: 15, delay: 800 },
-      { text: "ROOT ACCESS GRANTED: Welcome, ANONYMOUS_ADMIN.", style: "sys-text", speed: 25, delay: 800 },
-      { text: "PMA MEDIA Command Center Activated.", style: "sys-text", speed: 15, delay: 600 },
-      { text: "Executing localized sweep for hidden directories...", style: "cmd-text", speed: 20, delay: 1200 },
-      { text: "ERROR: Unauthorized visual hazard identified.", style: "warn-text", speed: 25, delay: 800 },
-      { text: "Target: [TUGELANBOTO_19] Underground art repository.", style: "warn-text", speed: 20, delay: 600 },
-      { text: "Locking folder permissions. View at your own risk.", style: "warn-text", speed: 15, delay: 600 },
-      { text: "Network uplink secure. Awaiting instructions.", style: "txt-text", speed: 15, delay: 0 }
-    ];
-
-    const seq3 = [
-      { text: "Establishing connection to deep web onion relays...", style: "cmd-text", speed: 20, delay: 600 },
-      { text: "Bouncing signal across 14 international proxy nodes...", style: "txt-text", speed: 15, delay: 800 },
-      { text: "Proxy chain: CH -> NL -> IS -> SE -> ID... [ESTABLISHED]", style: "txt-text", speed: 15, delay: 1200 },
-      { text: "Obfuscating MAC address and packet headers...", style: "cmd-text", speed: 15, delay: 500 },
-      { text: "Digital footprint erased. Connection untraceable.", style: "sys-text", speed: 20, delay: 800 },
-      { text: "Login Request: ANONYMOUS_ADMIN...", style: "cmd-text", speed: 20, delay: 600 },
-      { text: "AUTHENTICATION SUCCESSFUL.", style: "sys-text", speed: 30, delay: 500 },
-      { text: "Loading PMA MEDIA interface (Precision • Maintenance • Authentic).", style: "txt-text", speed: 15, delay: 800 },
-      { text: "Deploying Network Penetration and Cryptography tools... [READY]", style: "txt-text", speed: 15, delay: 600 },
-      { text: "Scanning encrypted partition...", style: "cmd-text", speed: 20, delay: 1200 },
-      { text: "CAUTION: Encrypted partition contains raw visual data.", style: "warn-text", speed: 25, delay: 800 },
-      { text: "Signature matches [TUGELANBOTO_19] visual hazard.", style: "warn-text", speed: 15, delay: 500 },
-      { text: "Quarantine protocol engaged to prevent aesthetic corruption.", style: "warn-text", speed: 20, delay: 600 },
-      { text: "Terminal ready for deployment. Select module.", style: "txt-text", speed: 15, delay: 0 }
-    ];
-
-    const seq4 = [
-      { text: "root@pma-media:~$ start_sniffer --interface wlan0", style: "cmd-text", speed: 15, delay: 600 },
-      { text: "Listening to network traffic... Capturing WPA2 handshakes.", style: "txt-text", speed: 10, delay: 800 },
-      { text: "Target acquired. Extracting SHA-256 password hash...", style: "txt-text", speed: 10, delay: 600 },
-      { text: "Hash captured: 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", style: "sys-text", speed: 5, delay: 800 },
-      { text: "Initiating dictionary brute-force attack... ", style: "cmd-text", speed: 15, delay: 800 },
-      { text: "Testing passwords: [||||||..............] 3.5M attempts.", style: "txt-text", speed: 10, delay: 600 },
-      { text: "Testing passwords: [||||||||||||........] 8.2M attempts.", style: "txt-text", speed: 10, delay: 800 },
-      { text: "Testing passwords: [||||||||||||||||||||] MATCH FOUND.", style: "txt-text", speed: 10, delay: 600 },
-      { text: "Decrypted Key: ************", style: "sys-text", speed: 30, delay: 800 },
-      { text: "Gaining unauthorized entry to PMA MEDIA servers...", style: "cmd-text", speed: 15, delay: 1000 },
-      { text: "System Override successful. Welcome, ANONYMOUS_ADMIN.", style: "sys-text", speed: 20, delay: 600 },
-      { text: "WARNING: Extreme visual graphics detected in subsystem.", style: "warn-text", speed: 25, delay: 600 },
-      { text: "Target: [TUGELANBOTO_19] Distressed visual assets.", style: "warn-text", speed: 20, delay: 500 },
-      { text: "Applying digital vault lock...", style: "cmd-text", speed: 15, delay: 600 },
-      { text: "System stable. Awaiting hacking commands.", style: "txt-text", speed: 15, delay: 0 }
-    ];
-
-    const seq5 = [
-      { text: "root@pma-media:~$ initialize_defense_matrix", style: "cmd-text", speed: 15, delay: 500 },
-      { text: "Activating PMA Cyber Defense Grid...", style: "sys-text", speed: 15, delay: 800 },
-      { text: "Scanning all network layers for active intrusions...", style: "cmd-text", speed: 15, delay: 500 },
-      { text: "[ALERT] Trojan horse detected attempting port 8080 breach.", style: "warn-text", speed: 20, delay: 800 },
-      { text: "Deploying honeypot server to trap inbound connection...", style: "cmd-text", speed: 20, delay: 1200 },
-      { text: "Attacker successfully diverted to isolated sandbox.", style: "txt-text", speed: 10, delay: 600 },
-      { text: "Executing reverse-shell to attacker terminal... [ACCESS SECURED]", style: "txt-text", speed: 10, delay: 800 },
-      { text: "Extracting attacker data and permanently banning IP.", style: "txt-text", speed: 10, delay: 600 },
-      { text: "Perimeter secured. Handing control to ANONYMOUS_ADMIN.", style: "sys-text", speed: 20, delay: 800 },
-      { text: "Running internal sweep on PMA MEDIA core files...", style: "cmd-text", speed: 15, delay: 1200 },
-      { text: "FATAL ERROR: Anomalous art repository discovered.", style: "warn-text", speed: 25, delay: 800 },
-      { text: "Warning: [TUGELANBOTO 19] breaks standard design protocols.", style: "warn-text", speed: 20, delay: 500 },
-      { text: "Bypassing safety locks is not recommended.", style: "warn-text", speed: 20, delay: 600 },
-      { text: "Command Center ready. Choose your exploit vector.", style: "txt-text", speed: 15, delay: 0 }
-    ];
-
-    const allTemplates = [seq1, seq2, seq3, seq4, seq5];
-    const randomIndex = Math.floor(Math.random() * allTemplates.length);
-    const bootSequence = allTemplates[randomIndex];
 
     const terminalContent = document.getElementById('terminal-content');
     const terminalBox = document.getElementById('terminal-box');
     let lineIndex = 0;
     
     function createNewLine(styleClass) {
-      const p = document.createElement('p');
-      p.className = `log-line ${styleClass}`;
+      const p = document.createElement('p'); p.className = `log-line ${styleClass}`;
       const spanText = document.createElement('span');
-      const spanCursor = document.createElement('span');
-      spanCursor.className = 'cursor';
-      p.appendChild(spanText);
-      p.appendChild(spanCursor);
-      terminalContent.appendChild(p);
-      return { p, spanText, spanCursor };
+      const spanCursor = document.createElement('span'); spanCursor.className = 'cursor';
+      p.appendChild(spanText); p.appendChild(spanCursor);
+      terminalContent.appendChild(p); return { spanText, spanCursor };
     }
 
     function typeLine() {
-      if (lineIndex >= bootSequence.length) {
+      if (lineIndex >= seq.length) {
         const lastCursor = terminalContent.querySelector('.cursor');
         if(lastCursor) lastCursor.style.animation = 'blink 1s step-end infinite';
         return;
       }
-      const currentLine = bootSequence[lineIndex];
-      const { p, spanText, spanCursor } = createNewLine(currentLine.style);
+      const currentLine = seq[lineIndex];
+      const { spanText, spanCursor } = createNewLine(currentLine.style);
       terminalBox.scrollTop = terminalBox.scrollHeight;
-
       let charIndex = 0;
       function typeChar() {
         if (charIndex < currentLine.text.length) {
-          spanText.innerHTML += currentLine.text.charAt(charIndex);
-          charIndex++;
+          spanText.innerHTML += currentLine.text.charAt(charIndex); charIndex++;
           setTimeout(typeChar, currentLine.speed);
         } else {
-          spanCursor.remove();
-          lineIndex++;
-          setTimeout(typeLine, currentLine.delay);
+          spanCursor.remove(); lineIndex++; setTimeout(typeLine, currentLine.delay);
         }
       }
       typeChar();
     }
-    
     setTimeout(typeLine, 1500);
 
-    // ==========================================
-    // PWA INSTALLATION SYSTEM (CUSTOM BUTTON)
-    // ==========================================
+    // --- PWA SYSTEM ---
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Error:', err));
-      });
+      window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Error:', err)); });
     }
-
-    let deferredPrompt;
-    const installBtn = document.getElementById('pma-install-btn');
-
+    let deferredPrompt; const installBtn = document.getElementById('pma-install-btn');
     window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        installBtn.style.display = 'inline-block';
+        e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'inline-block';
     });
-
     installBtn.addEventListener('click', async () => {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                console.log('User installed PMA Media');
-                installBtn.style.display = 'none'; 
-            }
+            if (outcome === 'accepted') { installBtn.style.display = 'none'; }
             deferredPrompt = null;
         }
     });
-
-    window.addEventListener('appinstalled', () => {
-        installBtn.style.display = 'none';
-        deferredPrompt = null;
-    });
+    window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; deferredPrompt = null; });
   </script>
 </body>
 </html>
