@@ -19,21 +19,20 @@
   
   <style>
     /* ROOT & RESET */
-    body, html { margin: 0; padding: 0; min-height: 100vh; background-color: #030303 !important; color: #fff; font-family: 'Montserrat', sans-serif; background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 40px 40px; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; box-shadow: inset 0 0 150px rgba(0,0,0,0.9); }
+    body, html { margin: 0; padding: 0; min-height: 100vh; background-color: #030303 !important; color: #fff; font-family: 'Montserrat', sans-serif; background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 40px 40px; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; box-shadow: inset 0 0 150px rgba(0,0,0,0.9); overflow-x: hidden; }
     .crt-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%); background-size: 100% 3px; z-index: 999; pointer-events: none; }
 
     /* =========================================
-       ARSITEKTUR HEADER & CAROUSEL (DIPERBAIKI)
+       ARSITEKTUR FULLSCREEN EDGE-TO-EDGE
        ========================================= */
     .utilities-section {
-        width: 95%;
-        max-width: 1100px;
+        width: 98%;           /* Lebar dimaksimalkan hingga hampir menyentuh tepi layar */
+        max-width: 1800px;    /* Batas maksimal dinaikkan drastis dari 1100px */
         margin: 30px auto 10px auto;
         z-index: 10;
         position: relative;
     }
 
-    /* Header Sejajar dengan Kontrol */
     .carousel-header-container {
         display: flex;
         justify-content: space-between;
@@ -64,12 +63,12 @@
     }
     .nav-arrow:hover { background: rgba(13, 202, 240, 0.1); border-color: #0dcaf0; color: #0dcaf0; box-shadow: 0 0 10px rgba(13, 202, 240, 0.3); }
 
-    /* Matriks Lorong Kartu */
+    /* Matriks Lorong Kartu 10 Item */
     .grid-showcase {
         display: flex;
         overflow-x: auto;
         gap: 15px;
-        padding: 5px 5px 25px 5px; /* Memberi ruang Y agar shadow tidak terpotong */
+        padding: 5px 5px 25px 5px; 
         scrollbar-width: none; 
         -ms-overflow-style: none; 
     }
@@ -78,14 +77,14 @@
     .tool-card {
         flex: 0 0 auto; 
         width: 320px;   
-        min-height: 220px; /* Memaksa proporsi sama rata */
+        min-height: 230px; 
         background: rgba(12, 12, 12, 0.85);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 6px;
         padding: 20px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between; /* Menyebarkan isi rata atas-bawah */
+        justify-content: space-between; 
         backdrop-filter: blur(5px);
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
@@ -93,10 +92,10 @@
     .tool-card:hover { border-color: #0dcaf0; box-shadow: 0 8px 20px rgba(13, 202, 240, 0.15); transform: translateY(-4px); }
     
     .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
-    .tool-card h3 { font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; margin: 0 0 8px 0; color: #fff; text-transform: uppercase;}
+    .tool-card h3 { font-family: 'Share Tech Mono', monospace; font-size: 1.05rem; margin: 0 0 8px 0; color: #fff; text-transform: uppercase;}
     .tool-card p { font-size: 0.75rem; color: #aaa; margin: 0 0 20px 0; line-height: 1.6; }
     
-    .launch-btn { font-size: 0.8rem; padding: 10px; width: 100%; border: 1px solid #333; background: #000; color: #0dcaf0; transition: 0.3s; font-family: 'JetBrains Mono', monospace; box-sizing: border-box; text-align: center; text-decoration: none; display: block; }
+    .launch-btn { font-size: 0.8rem; padding: 10px; width: 100%; border: 1px solid #333; background: #000; color: #0dcaf0; transition: 0.3s; font-family: 'JetBrains Mono', monospace; box-sizing: border-box; text-align: center; text-decoration: none; display: block; cursor: pointer; }
     .launch-btn:hover { background: rgba(13, 202, 240, 0.1); border-color: #0dcaf0; letter-spacing: 2px;}
 
     .tool-card.locked { border-color: #1a1a1a; background: rgba(5,5,5,0.8); }
@@ -107,9 +106,9 @@
     .tool-card.locked:hover .launch-btn { color: #ff4444; border-color: #ff4444; background: rgba(255,68,68,0.1); }
 
     /* =========================================
-       BENTO GRID ARCHITECTURE (BAWAH)
+       BENTO GRID ARCHITECTURE (FULLSCREEN)
        ========================================= */
-    .dashboard-container { width: 95%; max-width: 1100px; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(110px, auto); gap: 15px; padding-bottom: 50px; z-index: 10; animation: screen-flicker 0.2s infinite; }
+    .dashboard-container { width: 98%; max-width: 1800px; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(110px, auto); gap: 15px; padding-bottom: 50px; z-index: 10; animation: screen-flicker 0.2s infinite; }
     @keyframes screen-flicker { 0% { opacity: 0.98; } 50% { opacity: 1; filter: brightness(1.02); } 100% { opacity: 0.99; } }
     .widget { background: rgba(12, 12, 12, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; padding: 25px; display: flex; flex-direction: column; position: relative; overflow: hidden; backdrop-filter: blur(10px); transition: border-color 0.3s ease, transform 0.3s ease; }
     .widget:hover { border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,255,0,0.05); }
@@ -246,11 +245,47 @@
 
         <div class="tool-card locked">
             <div>
+                <div class="card-icon">🔐</div>
+                <h3>AES-256 Vault</h3>
+                <p>Military-grade cryptography. Encrypt strings and local files using Web Crypto API PBKDF2 iterations.</p>
+            </div>
+            <button class="launch-btn">[ SYSTEM LOCKED ]</button>
+        </div>
+
+        <div class="tool-card locked">
+            <div>
+                <div class="card-icon">🖼️</div>
+                <h3>Steganography Injector</h3>
+                <p>Hide encrypted payload data inside the Least Significant Bits (LSB) of visual imagery.</p>
+            </div>
+            <button class="launch-btn">[ SYSTEM LOCKED ]</button>
+        </div>
+
+        <div class="tool-card locked">
+            <div>
+                <div class="card-icon">🔌</div>
+                <h3>IoT Serial Terminal</h3>
+                <p>Web Serial API interface. Establish direct USB communication to ESP32 boards for hardware telemetry.</p>
+            </div>
+            <button class="launch-btn">[ SYSTEM LOCKED ]</button>
+        </div>
+
+        <div class="tool-card locked">
+            <div>
+                <div class="card-icon">🧬</div>
+                <h3>JWT & Hash Decoder</h3>
+                <p>Real-time parser for JSON Web Tokens, Base64 strings, and SHA cryptographic hash generation.</p>
+            </div>
+            <button class="launch-btn">[ SYSTEM LOCKED ]</button>
+        </div>
+
+        <div class="tool-card locked">
+            <div>
                 <div class="card-icon">👁️‍🗨️</div>
                 <h3>A.I Face Obfuscator</h3>
-                <p>TensorFlow.js vision model to detect and redact human faces instantly in browser memory.</p>
+                <p>TensorFlow.js vision model to detect and redact human faces instantly within browser memory.</p>
             </div>
-            <a href="#" class="launch-btn">[ SYSTEM LOCKED ]</a>
+            <button class="launch-btn">[ SYSTEM LOCKED ]</button>
         </div>
 
         <div class="tool-card locked">
@@ -259,16 +294,16 @@
                 <h3>WebRTC Dead Drop</h3>
                 <p>Peer-to-peer encrypted file transfer tunnel. Bypass intermediary servers for absolute privacy.</p>
             </div>
-            <a href="#" class="launch-btn">[ SYSTEM LOCKED ]</a>
+            <button class="launch-btn">[ SYSTEM LOCKED ]</button>
         </div>
 
         <div class="tool-card locked">
             <div>
                 <div class="card-icon">🛡️</div>
                 <h3>EXIF Sanitizer</h3>
-                <p>Binary header manipulation to strip GPS coordinates and metadata tracks from image assets.</p>
+                <p>Binary header manipulation to strip GPS coordinates and metadata tracks from your media assets.</p>
             </div>
-            <a href="#" class="launch-btn">[ SYSTEM LOCKED ]</a>
+            <button class="launch-btn">[ SYSTEM LOCKED ]</button>
         </div>
 
     </div>
@@ -383,7 +418,7 @@
 
     let scrollDirection = 1; 
     let isHovered = false;
-    const scrollSpeed = 0.5; // Diperlambat sedikit agar lebih elegan
+    const scrollSpeed = 0.5;
 
     carousel.addEventListener('mouseenter', () => isHovered = true);
     carousel.addEventListener('mouseleave', () => isHovered = false);
