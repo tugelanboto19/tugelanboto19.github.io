@@ -291,3 +291,26 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("scroll", fallbackLazyLoad);
     }
 });
+
+window.addEventListener('load', () => {
+    // Kumpulkan parameter yang hanya bisa didapat di sisi klien (browser)
+    const payloadTrafik = {
+        currentPath: window.location.pathname,
+        referrer: document.referrer || 'Direct',
+        screenWidth: window.innerWidth
+    };
+
+    // Alamat Edge Function Supabase Anda
+    const SUPABASE_FUNCTION_URL = 'https://vdefwqyscadxnroghoex.supabase.co/functions/v1/track-visitor';
+
+    // Menggunakan Fetch API dengan parameter 'keepalive: true' 
+    // Ini merupakan alternatif modern dari sendBeacon untuk request POST berformat JSON
+    fetch(SUPABASE_FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payloadTrafik),
+        keepalive: true 
+    }).catch(err => console.warn('Analytics tersumbat (mungkin terblokir uBlock Origin)', err));
+});
