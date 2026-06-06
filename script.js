@@ -220,3 +220,74 @@ document.addEventListener('dragstart', function(e) {
     }
 });
 
+/**
+ * PWA Architecture & High-Performance Asset Management
+ * Core Engine: Intersection Observer untuk Efisiensi Rendering
+ */
+
+// 1. Registrasi Service Worker secara Non-blocking
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('Service Worker terestorasi pada scope:', registration.scope);
+            })
+            .catch(error => {
+                console.error('Kegagalan registrasi Service Worker:', error);
+            });
+    });
+}
+
+// 2. Mesin Utama Asynchronous Lazy Loading
+document.addEventListener("DOMContentLoaded", () => {
+    const komponenGambar = document.querySelectorAll("img.lazy-target");
+
+    if ("IntersectionObserver" in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                // Periksa apakah elemen sudah masuk ke dalam batas viewport
+                if (entry.isIntersecting) {
+                    const gambar = entry.target;
+                    
+                    // Substitusi placeholder base64 dengan path aset riil
+                    if (gambar.dataset.src) {
+                        gambar.src = gambar.dataset.src;
+                        gambar.classList.remove("lazy-target");
+                        gambar.classList.add("fade-in-complete");
+                    }
+                    
+                    // Lepaskan observasi pada elemen ini untuk menghemat alokasi memori
+                    observer.unobserve(gambar);
+                }
+            });
+        }, {
+            root: null, // Menggunakan viewport perangkat default
+            rootMargin: "0px 0px 300px 0px", // Pre-load aset 300px sebelum muncul di layar (menjaga UX)
+            threshold: 0.01 // Terpancing saat 1% dimensi objek memotong viewport
+        });
+
+        komponenGambar.forEach(img => imageObserver.observe(img));
+    } else {
+        // Mekanisme Fallback aman jika browser lama tidak mendukung Intersection Observer
+        let jodaScroll = false;
+        const fallbackLazyLoad = () => {
+            if (jodaScroll === false) {
+                jodaScroll = true;
+                setTimeout(() => {
+                    komponenGambar.forEach(gambar => {
+                        if ((gambar.getBoundingClientRect().top <= window.innerHeight && gambar.getBoundingClientRect().bottom >= 0) && getComputedStyle(gambar).display !== "none") {
+                            gambar.src = gambar.dataset.src;
+                            gambar.classList.remove("lazy-target");
+                        }
+                    });
+                    jodaScroll = false;
+                    // Hapus event listener jika semua gambar sudah terevaluasi
+                    if (document.querySelectorAll("img.lazy-target").length === 0) {
+                        document.removeEventListener("scroll", fallbackLazyLoad);
+                    }
+                }, 200);
+            }
+        };
+        document.addEventListener("scroll", fallbackLazyLoad);
+    }
+});
