@@ -43,9 +43,12 @@
               <canvas id="signaturePad" width="500" height="200" style="background: #fff; border-radius: 5px; cursor: crosshair; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); max-width: 100%; touch-action: none;"></canvas>
               
               <div class="canvas-controls" style="margin-top: 15px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: center;">
-                  <label style="color: #0f0; font-family: monospace; font-size: 0.9rem; cursor: pointer;">
-                      <input type="checkbox" id="toggleTimestamp" checked> Sertakan Teks Waktu & Hash
-                  </label>
+                 <label style="color: #0f0; font-family: monospace; font-size: 0.9rem; cursor: pointer;">
+    <input type="checkbox" id="toggleTimestamp" checked> Sertakan Teks Waktu & Hash
+</label>
+<label style="color: #0f0; font-family: monospace; font-size: 0.9rem; cursor: pointer;">
+    <input type="checkbox" id="modePolos"> Mode TTD Polos (Tanpa QR & Auto-Crop)
+</label>
                   <button class="launch-btn" onclick="clearCanvas()">CLEAR_DATA</button>
                   <button class="launch-btn" onclick="saveSignature()" style="border-color: #0dcaf0; color: #0dcaf0;">GENERATE_STAMP</button>
               </div>
@@ -164,72 +167,92 @@
     }
 
     function saveSignature() {
-        try {
-            // 1. Ambil & Validasi Data Pengguna
-            const signerName = document.getElementById('signer-name').value.trim();
-            const signerEmail = document.getElementById('signer-email').value.trim();
+    try {
+        const isModePolos = document.getElementById('modePolos').checked;
 
-            if (!signerName || !signerEmail) {
-                showToast("SISTEM MENOLAK: Nama dan Email wajib diisi!", "error");
-                return;
-            }
-
-            const includeText = document.getElementById('toggleTimestamp').checked;
-            const docHash = "PMA-" + Math.random().toString(36).substr(2, 10).toUpperCase();
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('id-ID');
-            const timeStr = now.toLocaleTimeString('id-ID');
-
-            // 2. PEMBUATAN PAYLOAD TOKEN (Membungkus data ke dalam URL)
-            const payload = {
-                id: docHash,
-                name: signerName,
-                email: signerEmail,
-                date: dateStr,
-                time: timeStr
-            };
+        // ---------------------------------------------------------
+        // JALUR BYPASS: TANDA TANGAN POLOS (AUTO-CROP)
+        // ---------------------------------------------------------
+        if (isModePolos) {
+            // Gunakan fungsi engine crop yang baru kita buat
+            const croppedCanvas = autoCropCanvas(canvas);
+            const plainDataURL = croppedCanvas.toDataURL('image/png');
             
-            // Encode JSON ke Base64 (Aman untuk URL)
-            const encodedToken = btoa(encodeURIComponent(JSON.stringify(payload)));
-            const verifyUrl = 'https://pma.wtf/verify.html?data=' + encodedToken;
-
-            // 3. Suntik Teks ke Gambar Kanvas
-            if (includeText) {
-                ctx.font = "11px 'JetBrains Mono', monospace"; 
-                ctx.fillStyle = "#050505";
-                ctx.fillText(`SIGNED BY: ${signerName.toUpperCase()}`, 10, canvas.height - 35); 
-                ctx.fillText(`DATE: ${dateStr} ${timeStr}`, 10, canvas.height - 20); 
-                ctx.fillText(`HASH: ${docHash}`, 10, canvas.height - 5); 
-            }
-
-          // 4. Buat QR Code dengan URL yang berisi Token Data
-            if (typeof QRious !== 'undefined') {
-                const qrCanvas = document.createElement('canvas');
-                new QRious({ 
-                    element: qrCanvas, 
-                    value: verifyUrl, 
-                    size: 100, // [DIPERBESAR] Sebelumnya 75, sekarang diubah jadi 100 piksel
-                    backgroundAlpha: 0, 
-                    foreground: '#050505' 
-                });
-                
-                // [DISESUAIKAN] Karena QR membesar jadi 100, kita geser posisinya ke -110 
-                // agar menyisakan margin/jarak 10 piksel dari tepi kanan dan bawah kanvas.
-                ctx.drawImage(qrCanvas, canvas.width - 110, canvas.height - 110);
-            }
-
-            // Ekspor ke layar
-            const dataURL = canvas.toDataURL('image/png');
-            document.getElementById('preview-img').src = dataURL;
+            // Render ke UI
+            document.getElementById('preview-img').src = plainDataURL;
             const downloadBtn = document.getElementById('download-btn');
-            if(downloadBtn) downloadBtn.href = dataURL; 
+            if(downloadBtn) downloadBtn.href = plainDataURL; 
             document.getElementById('stamp-preview').style.display = 'block';
             
-            showToast("Stempel berhasil di-generate beserta profil!", "success");
-        } catch (error) { 
-            showToast("Error memproses stempel: " + error.message, "error"); 
+            showToast("Tanda Tangan Polos berhasil diekstrak (Cropped)!", "success");
+            return; // Hentikan eksekusi, jangan jalankan logika QR Code di bawah
         }
+
+        // ---------------------------------------------------------
+        // JALUR NORMAL: STEMPEL + QR CODE + METADATA
+        // ---------------------------------------------------------
+        // 1. Ambil & Validasi Data Pengguna
+        const signerName = document.getElementById('signer-name').value.trim();
+        const signerEmail = document.getElementById('signer-email').value.trim();
+
+        if (!signerName || !signerEmail) {
+            showToast("SISTEM MENOLAK: Nama dan Email wajib diisi!", "error");
+            return;
+        }
+
+        const includeText = document.getElementById('toggleTimestamp').checked;
+        const docHash = "PMA-" + Math.random().toString(36).substr(2, 10).toUpperCase();
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID');
+        const timeStr = now.toLocaleTimeString('id-ID');
+
+        // 2. PEMBUATAN PAYLOAD TOKEN
+        const payload = {
+            id: docHash,
+            name: signerName,
+            email: signerEmail,
+            date: dateStr,
+            time: timeStr
+        };
+        
+        const encodedToken = btoa(encodeURIComponent(JSON.stringify(payload)));
+        const verifyUrl = 'https://pma.wtf/verify.html?data=' + encodedToken;
+
+        // 3. Suntik Teks ke Gambar Kanvas
+        if (includeText) {
+            ctx.font = "11px 'JetBrains Mono', monospace"; 
+            ctx.fillStyle = "#050505";
+            ctx.fillText(`SIGNED BY: ${signerName.toUpperCase()}`, 10, canvas.height - 35); 
+            ctx.fillText(`DATE: ${dateStr} ${timeStr}`, 10, canvas.height - 20); 
+            ctx.fillText(`HASH: ${docHash}`, 10, canvas.height - 5); 
+        }
+
+        // 4. Buat QR Code
+        if (typeof QRious !== 'undefined') {
+            const qrCanvas = document.createElement('canvas');
+            new QRious({ 
+                element: qrCanvas, 
+                value: verifyUrl, 
+                size: 100, 
+                backgroundAlpha: 0, 
+                foreground: '#050505' 
+            });
+            
+            ctx.drawImage(qrCanvas, canvas.width - 110, canvas.height - 110);
+        }
+
+        // Ekspor ke layar (Tanpa crop karena mode stempel utuh)
+        const dataURL = canvas.toDataURL('image/png');
+        document.getElementById('preview-img').src = dataURL;
+        const downloadBtn = document.getElementById('download-btn');
+        if(downloadBtn) downloadBtn.href = dataURL; 
+        document.getElementById('stamp-preview').style.display = 'block';
+        
+        showToast("Stempel berhasil di-generate beserta profil!", "success");
+    } catch (error) { 
+        showToast("Error memproses stempel: " + error.message, "error"); 
     }
+}
 
     // ==========================================
     // 2. MESIN VISUAL & DRAG-DROP PDF 
@@ -437,6 +460,59 @@
           });
       });
     }
+    // ==========================================
+// ENGINE AUTO-CROP KANVAS (PIXEL SCANNING)
+// ==========================================
+function autoCropCanvas(sourceCanvas) {
+    // Meminta alokasi memori untuk pembacaan data piksel yang cepat
+    const ctx = sourceCanvas.getContext('2d', { willReadFrequently: true });
+    
+    // Mengekstrak array Uint8ClampedArray berisi data RGBA (Red, Green, Blue, Alpha)
+    const imgData = ctx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+    const data = imgData.data;
+
+    let minX = sourceCanvas.width, minY = sourceCanvas.height, maxX = 0, maxY = 0;
+    let isBlank = true;
+
+    // Pemindaian linear pada matriks piksel
+    for (let y = 0; y < sourceCanvas.height; y++) {
+        for (let x = 0; x < sourceCanvas.width; x++) {
+            // Kita hanya peduli pada nilai Alpha (transparansi) yang berada di indeks ke-4 setiap piksel
+            const alphaIndex = ((y * sourceCanvas.width) + x) * 4 + 3;
+            
+            if (data[alphaIndex] > 0) { // Terdapat coretan tinta
+                isBlank = false;
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            }
+        }
+    }
+
+    // Jika user klik tombol tanpa mencoret sama sekali
+    if (isBlank) return sourceCanvas;
+
+    // Hitung dimensi aktual coretan + 10px margin agar tepian tidak terpotong tajam
+    const padding = 10;
+    const cropWidth = (maxX - minX) + (padding * 2);
+    const cropHeight = (maxY - minY) + (padding * 2);
+
+    // Buat kanvas virtual (in-memory) untuk menampung hasil potongan
+    const destCanvas = document.createElement('canvas');
+    destCanvas.width = cropWidth;
+    destCanvas.height = cropHeight;
+    const destCtx = destCanvas.getContext('2d');
+
+    // Transfer area coretan dari kanvas asli ke kanvas virtual
+    destCtx.drawImage(
+        sourceCanvas, 
+        minX - padding, minY - padding, cropWidth, cropHeight, // Koordinat & Dimensi Source
+        0, 0, cropWidth, cropHeight                            // Koordinat & Dimensi Destination
+    );
+
+    return destCanvas;
+}
   </script>
 </body>
 </html>
